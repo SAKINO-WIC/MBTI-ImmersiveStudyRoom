@@ -26,7 +26,7 @@
 
 ## 在线体验
 
-🔗 [Cloudflare Pages 部署地址](https://mbti-immersive-study-room.pages.dev)
+🔗 [github page 部署地址]([https://mbti-immersive-study-room.pages.dev](https://sakino-wic.github.io/MBTI-ImmersiveStudyRoom/))
 
 ## 产品设计文档
 
