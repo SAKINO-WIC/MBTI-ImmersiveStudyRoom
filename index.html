@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>MBTI 沉浸自习室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Serif+SC:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#e8c547;--glow:rgba(232,197,71,.25);--glass:rgba(12,12,18,.55);--border:rgba(255,255,255,.07);--t1:#f0ece4;--t2:rgba(240,236,228,.5);--t3:rgba(240,236,228,.25);--r:16px;--rs:10px;--ease:cubic-bezier(.4,0,.2,1);--surface:rgba(255,255,255,.015)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Serif SC',serif;background:#080808;color:var(--t1);-webkit-font-smoothing:antialiased;user-select:none}
+::selection{background:var(--accent);color:#0a0a0a}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+input{font-family:inherit}
+
+/* ── 日间模式 ── */
+body.light{--accent:#b8942a;--glow:rgba(184,148,42,.2);--glass:rgba(255,255,255,.72);--border:rgba(0,0,0,.1);--t1:#1a1a2e;--t2:rgba(26,26,46,.45);--t3:rgba(26,26,46,.22);--surface:rgba(0,0,0,.025)}
+body.light #sceneBg{filter:brightness(1.6) saturate(.5)}
+body.light .orb{filter:blur(90px) brightness(1.8) saturate(.4)}
+body.light #vignette{background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(255,255,255,.4))}
+body.light::after{opacity:.02}
+body.light .scene-badge,.light .tbtn,.light .tmodes,.light .ibtn,.light .bbtn,.light .mixer-pop,.light .slide-panel{background:rgba(255,255,255,.72);border-color:rgba(0,0,0,.1)}
+body.light .tbtn:hover,.light .ibtn:hover,.light .bbtn:hover{background:rgba(0,0,0,.04);color:#1a1a2e}
+body.light .tbtn.go{background:var(--accent);color:#fff;border-color:transparent}
+body.light .tmode{color:rgba(26,26,46,.5)}
+body.light .tmode.on{background:rgba(0,0,0,.06);color:#1a1a2e}
+body.light .ibtn{color:rgba(26,26,46,.5)}
+body.light .ibtn-switch{border-color:rgba(184,148,42,.25);color:var(--accent)}
+body.light .vol-slider,.light .mx-sl{background:rgba(0,0,0,.1)}
+body.light .dg-bar{background:rgba(0,0,0,.06)}
+body.light .tbg{stroke:rgba(0,0,0,.06)}
+body.light .panel-overlay{background:rgba(0,0,0,.18)}
+body.light .todo-add input,.light .cn-input{border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.02)}
+body.light .td-item,.light .j-entry{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.06)}
+body.light .td-ck{border-color:rgba(0,0,0,.15)}
+body.light .sel-btn{background:rgba(255,255,255,.5)}
+body.light .sel-btn:hover{background:rgba(255,255,255,.8)}
+body.light .sg-btn{border-color:rgba(0,0,0,.12);color:rgba(26,26,46,.4)}
+body.light .type-card{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+body.light .type-card:hover{background:rgba(0,0,0,.04)}
+body.light .ach-toast{background:rgba(255,255,255,.96);border-color:var(--accent)}
+body.light #completeNotif{background:rgba(255,255,255,.55)}
+body.light .fdur{border-color:rgba(0,0,0,.12);color:rgba(26,26,46,.5)}
+body.light .fdur:hover{border-color:var(--accent);color:var(--accent)}
+body.light .fdur.on{background:var(--accent);color:#fff}
+
+/* ── 场景层 ── */
+#sceneBg{position:fixed;inset:-20px;z-index:0;transition:background 2s var(--ease);will-change:background,transform}
+.ambient{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0;transition:all 2.5s var(--ease);will-change:transform}
+#orb1{animation:obA 28s ease-in-out infinite}
+#orb2{animation:obB 34s ease-in-out infinite}
+@keyframes obA{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(35px,-25px) scale(1.06)}66%{transform:translate(-20px,18px) scale(.94)}}
+@keyframes obB{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-28px,18px) scale(1.08)}66%{transform:translate(22px,-22px) scale(.93)}}
+canvas#fx{position:fixed;inset:0;z-index:1;pointer-events:none}
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 35%,rgba(0,0,0,.55))}
+body::after{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+
+/* ── 选择页 ── */
+#selection{position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,rgba(8,8,12,.92),rgba(8,8,12,.98));backdrop-filter:blur(40px);transition:opacity .8s var(--ease),transform .8s var(--ease);overflow-y:auto;padding:16px 20px 12px}
+#selection.hidden{opacity:0;pointer-events:none;transform:scale(1.03)}
+.sel-head{text-align:center;margin-bottom:12px}
+.sel-head h1{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,5vw,44px);font-weight:300;letter-spacing:4px;margin-bottom:6px;background:linear-gradient(135deg,var(--t1),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sel-head p{font-size:12px;color:var(--t2);letter-spacing:1.5px;max-width:420px;line-height:1.6;margin:0 auto}
+.sel-cats{display:flex;flex-direction:column;gap:6px;width:100%;max-width:900px}
+.sel-cat{opacity:0;transform:translateY(20px);animation:selIn .6s var(--ease) forwards}
+.sel-cat:nth-child(2){animation-delay:.12s}.sel-cat:nth-child(3){animation-delay:.24s}.sel-cat:nth-child(4){animation-delay:.36s}
+@keyframes selIn{to{opacity:1;transform:translateY(0)}}
+.cat-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;padding-left:4px}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;letter-spacing:2px}
+.cat-tag{font-size:12px;color:var(--t3);letter-spacing:1px}
+.type-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.type-card{border:1px solid var(--border);border-radius:var(--rs);padding:8px 12px;cursor:pointer;background:var(--surface);transition:all .35s var(--ease);text-align:center}
+.type-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.03)}
+.sel-cat[data-cat="NT"] .type-card:hover{border-color:rgba(138,158,214,.35);box-shadow:0 4px 24px rgba(138,158,214,.1)}
+.sel-cat[data-cat="NF"] .type-card:hover{border-color:rgba(100,189,150,.35);box-shadow:0 4px 24px rgba(100,189,150,.1)}
+.sel-cat[data-cat="SJ"] .type-card:hover{border-color:rgba(212,165,116,.35);box-shadow:0 4px 24px rgba(212,165,116,.1)}
+.sel-cat[data-cat="SP"] .type-card:hover{border-color:rgba(232,145,90,.35);box-shadow:0 4px 24px rgba(232,145,90,.1)}
+.tc-code{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;letter-spacing:2px;margin-bottom:6px}
+.tc-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.tc-scene{font-size:11px;color:var(--t3)}
+.sel-goal-row{display:flex;align-items:center;gap:12px;margin-top:10px;justify-content:center}
+.sg-label{font-size:13px;color:var(--t2);letter-spacing:1px}
+.sg-btns{display:flex;gap:6px}
+.sg-btn{width:36px;height:36px;border:1px solid var(--border);background:transparent;color:var(--t2);border-radius:8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:14px;transition:all .25s}
+.sg-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sg-btn.on{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
+.sel-actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.sel-btn{display:flex;align-items:center;gap:8px;padding:11px 24px;border:1px solid var(--border);background:var(--surface);border-radius:var(--r);color:var(--t2);cursor:pointer;font-family:'Noto Serif SC',serif;font-size:12px;transition:all .3s var(--ease);letter-spacing:1px}
+.sel-btn:hover{background:rgba(255,255,255,.07);color:var(--t1);border-color:rgba(255,255,255,.15);transform:translateY(-2px)}
+.sel-btn.primary{border-color:rgba(232,197,71,.25);color:var(--accent)}
+.sel-btn.primary:hover{border-color:var(--accent);background:rgba(232,197,71,.08)}
+
+/* ── 自习室 ── */
+#studyUI{position:relative;z-index:10;width:100%;height:100%;display:flex;flex-direction:column;opacity:0;transition:opacity .8s .3s var(--ease);pointer-events:none}
+#studyUI.show{opacity:1;pointer-events:auto}
+
+.top-bar{display:flex;align-items:flex-start;justify-content:space-between;padding:24px 32px 0;flex-shrink:0;position:relative}
+.clock{font-family:'DM Mono',monospace;font-size:clamp(30px,4.5vw,42px);font-weight:300;letter-spacing:3px;line-height:1;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.date{font-size:11px;color:var(--t2);margin-top:5px;letter-spacing:.8px}
+.top-center{position:absolute;left:50%;top:24px;transform:translateX(-50%);z-index:5}
+.scene-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 20px;border-radius:24px;background:var(--glass);border:1px solid var(--border);backdrop-filter:blur(20px)}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--glow);flex-shrink:0}
+.sb-type{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:2px;font-weight:500}
+.sb-div{width:1px;height:14px;background:var(--border)}
+.sb-name{font-size:12px;color:var(--t2);letter-spacing:1px}
+.top-right{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.ibtn{height:36px;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(20px);border-radius:10px;color:var(--t2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .3s var(--ease);gap:5px;padding:0 10px;white-space:nowrap;position:relative;z-index:12}
+.ibtn:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.ibtn.on{color:var(--accent);border-color:rgba(232,197,71,.3)}
+.ib-icon{font-size:15px}.ib-label{font-size:11px;letter-spacing:.5px}
+.ibtn-switch{border-color:rgba(232,197,71,.2);color:var(--accent)}
+.ibtn-switch:hover{border-color:var(--accent);background:rgba(232,197,71,.08)}
+.vol-wrap{position:relative;display:flex;align-items:center;gap:6px}
+.vol-icon{cursor:pointer;font-size:13px;color:var(--t2);transition:color .2s}
+.vol-icon:hover{color:var(--t1)}
+.vol-slider{-webkit-appearance:none;appearance:none;width:70px;height:3px;border-radius:2px;background:rgba(255,255,255,.1);outline:none;cursor:pointer}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer}
+.mixer-pop{position:absolute;top:calc(100% + 8px);right:0;width:210px;background:rgba(12,12,18,.94);border:1px solid var(--border);border-radius:12px;padding:14px 16px;backdrop-filter:blur(24px);display:none;z-index:60;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.mixer-pop.open{display:block}
+.mx-title{font-size:11px;color:var(--t3);letter-spacing:1px;margin-bottom:12px}
+.mx-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}.mx-row:last-child{margin-bottom:0}
+.mx-lbl{font-size:11px;color:var(--t2);width:54px;flex-shrink:0}
+.mx-sl{flex:1;-webkit-appearance:none;appearance:none;height:3px;border-radius:2px;background:rgba(255,255,255,.1);outline:none;cursor:pointer}
+.mx-sl::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--accent);cursor:pointer}
+
+/* ── 中间计时器 ── */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 20px}
+.timer-wrap{position:relative;width:clamp(180px,26vw,230px);aspect-ratio:1}
+.timer-svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 20px var(--glow))}
+.tbg{fill:none;stroke:rgba(255,255,255,.05);stroke-width:2.5}
+.tprog{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:553;stroke-dashoffset:0;transition:stroke .5s,stroke-dashoffset .3s linear}
+.timer-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-time{font-family:'DM Mono',monospace;font-size:clamp(38px,5.5vw,52px);font-weight:300;letter-spacing:3px;line-height:1}
+.timer-lbl{font-size:11px;color:var(--t2);margin-top:5px;letter-spacing:2px}
+.tctrls{display:flex;gap:12px;align-items:center;position:relative;z-index:15}
+.tbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);color:var(--t2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .3s var(--ease);position:relative;z-index:15}
+.tbtn:hover{background:rgba(255,255,255,.08);color:var(--t1);transform:scale(1.06)}
+.tbtn.go{width:54px;height:54px;background:var(--accent);color:#0a0a0a;border-color:transparent;font-size:18px;box-shadow:0 4px 28px var(--glow)}
+.tbtn.go:hover{transform:scale(1.1);box-shadow:0 6px 36px var(--glow)}
+.tmodes{display:flex;gap:3px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:3px;backdrop-filter:blur(16px)}
+.tmode{padding:7px 16px;border:none;background:transparent;color:var(--t2);font-family:'Noto Serif SC',serif;font-size:12px;border-radius:7px;cursor:pointer;transition:all .25s;letter-spacing:.5px}
+.tmode.on{background:rgba(255,255,255,.08);color:var(--t1)}
+.fdurs{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:4px;min-height:28px;transition:opacity .3s}
+.fdurs.hide{opacity:0;pointer-events:none;height:0;margin:0;overflow:hidden}
+.fdur{padding:3px 10px;border:1px solid var(--border);background:transparent;border-radius:6px;color:var(--t2);cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;transition:all .2s}
+.fdur:hover{border-color:var(--accent);color:var(--accent)}
+.fdur.on{background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
+.fdur-unit{font-size:10px;color:var(--t3);letter-spacing:1px}
+.quote-text{max-width:460px;text-align:center;font-size:13px;color:var(--t2);font-style:italic;line-height:1.9;letter-spacing:.8px;min-height:24px;padding:0 20px;transition:opacity .5s}
+.sessions{font-size:11px;color:var(--t3);letter-spacing:1px}
+.sessions b{color:var(--accent);font-family:'DM Mono',monospace;font-weight:400}
+.dg-bar{width:120px;height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.dg-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s var(--ease);width:0}
+.week-track{display:flex;gap:5px;align-items:center;justify-content:center;margin-top:2px}
+.wt-dot{border-radius:50%;background:rgba(255,255,255,.06);transition:all .3s var(--ease)}
+.wt-dot.active{background:var(--accent)}.wt-dot.today{box-shadow:0 0 6px var(--glow)}
+.timer-wrap.running .timer-svg{animation:tGlow 3s ease infinite}
+@keyframes tGlow{0%,100%{filter:drop-shadow(0 0 20px var(--glow))}50%{filter:drop-shadow(0 0 40px var(--glow))}}
+
+/* ── 底栏 ── */
+.bottom-bar{display:flex;justify-content:center;gap:6px;padding:18px;flex-shrink:0}
+.bbtn{display:flex;align-items:center;gap:5px;padding:8px 16px;border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);border-radius:var(--rs);color:var(--t2);cursor:pointer;font-family:'Noto Serif SC',serif;font-size:11px;transition:all .3s var(--ease);letter-spacing:.8px;position:relative;z-index:12}
+.bbtn:hover{background:rgba(255,255,255,.07);color:var(--t1);transform:translateY(-2px)}
+.bbtn .bi{font-size:14px}
+
+/* ── 专注模式 ── */
+body.focus .top-bar,body.focus .bottom-bar{opacity:0;pointer-events:none;transition:opacity .4s}
+body.focus .quote-text,body.focus .dg-bar,body.focus .sessions,body.focus .fdurs,body.focus .tmodes{opacity:0;transition:opacity .4s}
+#focusHint{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:200;opacity:0;pointer-events:none;transition:opacity .6s}
+#focusHint.active{opacity:1;pointer-events:auto}
+.focus-exit{padding:10px 28px;background:rgba(12,12,18,.75);border:1px solid var(--border);color:var(--t2);border-radius:24px;font-family:'Noto Serif SC',serif;font-size:12px;cursor:pointer;backdrop-filter:blur(16px);transition:all .3s;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.focus-exit:hover{background:rgba(255,255,255,.1);color:var(--t1)}
+.fe-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:feP 2s ease infinite}
+@keyframes feP{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+
+/* ── 面板 ── */
+.panel-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .35s}
+.panel-overlay.open{opacity:1;pointer-events:auto}
+.slide-panel{position:fixed;top:0;bottom:0;width:360px;max-width:90vw;z-index:101;background:rgba(12,12,18,.94);backdrop-filter:blur(30px);display:flex;flex-direction:column;transition:transform .45s var(--ease)}
+.slide-panel.left{left:0;border-right:1px solid var(--border);transform:translateX(-100%)}
+.slide-panel.left.open{transform:translateX(0)}
+.slide-panel.right{right:0;border-left:1px solid var(--border);transform:translateX(100%)}
+.slide-panel.right.open{transform:translateX(0)}
+.sp-head{display:flex;align-items:center;justify-content:space-between;padding:24px 24px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
+.sp-head h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;letter-spacing:2px}
+.sp-close{width:32px;height:32px;border:1px solid var(--border);background:transparent;border-radius:8px;color:var(--t2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.sp-close:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.sp-body{flex:1;overflow-y:auto;padding:20px 24px}
+.todo-add{display:flex;gap:8px;margin-bottom:16px}
+.todo-add input{flex:1;padding:10px 14px;border:1px solid var(--border);background:rgba(255,255,255,.03);border-radius:8px;color:var(--t1);font-size:14px;outline:none;transition:border-color .25s}
+.todo-add input:focus{border-color:var(--accent)}
+.todo-add input::placeholder{color:var(--t3)}
+.todo-add button{width:40px;height:40px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:8px;font-size:20px;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center}
+.todo-add button:hover{background:var(--accent);color:#0a0a0a}
+.td-list{display:flex;flex-direction:column;gap:6px}
+.td-item{display:flex;align-items:center;gap:10px;padding:11px 13px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:8px;transition:all .25s}
+.td-item:hover{background:rgba(255,255,255,.04)}
+.td-ck{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.td-ck:hover{border-color:var(--accent)}
+.td-item.done .td-ck{border-color:var(--accent);background:var(--accent);color:#0a0a0a}
+.td-txt{flex:1;font-size:14px;transition:all .25s}
+.td-item.done .td-txt{opacity:.35;text-decoration:line-through}
+.td-del{width:24px;height:24px;border:none;background:transparent;color:var(--t2);cursor:pointer;font-size:13px;border-radius:5px;opacity:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.td-item:hover .td-del{opacity:1}
+.td-del:hover{color:#e85454;background:rgba(232,84,84,.1)}
+.td-stat{margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,.04);font-size:12px;color:var(--t2);text-align:center}
+.j-entry{padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--surface)}
+.j-time{font-size:10px;color:var(--t3);margin-bottom:4px;font-family:'DM Mono',monospace}
+.j-text{font-size:13px;line-height:1.6}
+.j-empty{text-align:center;padding:40px 0;color:var(--t3);font-size:13px}
+.ach-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:6px;transition:all .25s}
+.ach-item.locked{opacity:.25}.ach-item:not(.locked){background:var(--surface)}
+.ach-icon{font-size:24px;width:36px;text-align:center;flex-shrink:0}
+.ach-info{flex:1}.ach-name{font-size:13px;font-weight:500;margin-bottom:2px}.ach-desc{font-size:11px;color:var(--t3)}
+.ach-counter{text-align:center;font-size:12px;color:var(--t2);margin-bottom:16px;letter-spacing:1px}
+
+/* ── 护眼/完成通知 ── */
+#eyeRest{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.88);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s}
+#eyeRest.show{opacity:1;pointer-events:auto}
+.er-icon{font-size:52px;margin-bottom:16px}.er-text{font-size:22px;letter-spacing:4px;margin-bottom:8px;font-family:'Cormorant Garamond',serif}
+.er-sub{font-size:13px;color:var(--t2);margin-bottom:20px}
+.er-bar{width:180px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.er-fill{height:100%;background:var(--accent);transition:width 1s linear}
+#completeNotif{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(12px);cursor:pointer}
+#completeNotif.show{display:flex}
+#completeNotif.show{opacity:1;pointer-events:auto}
+.cn-inner{text-align:center;transform:scale(.9) translateY(10px);transition:all .5s var(--ease);pointer-events:auto}
+#completeNotif.show .cn-inner{transform:scale(1) translateY(0)}
+.cn-icon{font-size:48px;color:var(--accent);margin-bottom:14px;animation:cnP 2s ease infinite}
+@keyframes cnP{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
+.cn-text{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;letter-spacing:4px;margin-bottom:6px}
+.cn-sub{font-size:13px;color:var(--t2);letter-spacing:1.5px;margin-bottom:12px}
+.cn-input{width:260px;padding:9px 14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);border-radius:8px;color:var(--t1);font-size:13px;outline:none;text-align:center;transition:border-color .25s}
+.cn-input:focus{border-color:var(--accent)}.cn-input::placeholder{color:var(--t3)}
+.cn-hint{font-size:11px;color:var(--t3);margin-top:14px;letter-spacing:1px}
+.ach-toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:500;display:flex;align-items:center;gap:12px;padding:14px 24px;background:rgba(12,12,18,.92);border:1px solid rgba(232,197,71,.3);border-radius:14px;backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:all .5s var(--ease);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.ach-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.at-icon{font-size:28px}.at-name{font-size:14px;font-weight:500;margin-bottom:2px}.at-desc{font-size:11px;color:var(--t3)}
+
+@media(max-width:768px){
+.type-row{grid-template-columns:repeat(2,1fr)}.top-bar{padding:16px 18px 0}.clock{font-size:26px}
+.scene-badge{padding:6px 12px;gap:6px}.sb-type{font-size:11px;letter-spacing:1px}.sb-name,.sb-div{display:none}
+.timer-wrap{width:160px}.timer-time{font-size:36px}.bottom-bar{gap:4px;padding:14px}
+.bbtn{padding:8px 12px;font-size:11px}.sel-head{margin-bottom:16px}.vol-slider{width:50px}
+.ibtn .ib-label{display:none}.ibtn{padding:0 8px;height:34px}
+.slide-panel{width:100%}.mixer-pop{right:-40px}.tmode{padding:7px 10px;font-size:11px}.fdur{padding:3px 8px;font-size:10px}}
+</style>
+</head>
+<body>
+
+<div id="sceneBg"></div>
+<div class="ambient"><div class="orb" id="orb1"></div><div class="orb" id="orb2"></div></div>
+<canvas id="fx"></canvas>
+<div id="vignette"></div>
+
+<div id="selection">
+  <div class="sel-head"><h1>找到你的学习氛围</h1><p>选择你的 MBTI 人格类型，开启专属于你的沉浸式自习空间</p></div>
+  <div class="sel-cats" id="selCats"></div>
+  <div class="sel-goal-row">
+    <span class="sg-label">每日番茄目标</span>
+    <div class="sg-btns" id="sgBtns"><button class="sg-btn" data-g="2">2</button><button class="sg-btn on" data-g="4">4</button><button class="sg-btn" data-g="6">6</button><button class="sg-btn" data-g="8">8</button></div>
+  </div>
+  <div class="sel-actions">
+    <button class="sel-btn primary" id="btnRandom">✦ 随机探索</button>
+    <button class="sel-btn" id="btnTheme">◐ <span id="themeText">日间模式</span></button>
+  </div>
+</div>
+
+<div id="studyUI">
+  <div class="top-bar">
+    <div><div class="clock" id="clock">00:00</div><div class="date" id="date"></div></div>
+    <div class="top-center"><div class="scene-badge"><span class="sb-dot"></span><span class="sb-type" id="bType">INTJ</span><span class="sb-div"></span><span class="sb-name" id="bScene"></span></div></div>
+    <div class="top-right">
+      <div class="vol-wrap" id="volWrap">
+        <span class="vol-icon" id="volIcon">♫</span>
+        <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="60">
+        <div class="mixer-pop" id="mixerPop">
+          <div class="mx-title">音效混音器</div>
+          <div class="mx-row"><span class="mx-lbl">总音量</span><input type="range" class="mx-sl" data-ch="master" min="0" max="100" value="60"></div>
+          <div class="mx-row"><span class="mx-lbl">🌧 雨声</span><input type="range" class="mx-sl" data-ch="rain" min="0" max="100" value="0"></div>
+          <div class="mx-row"><span class="mx-lbl">🔥 炉火</span><input type="range" class="mx-sl" data-ch="fire" min="0" max="100" value="0"></div>
+          <div class="mx-row"><span class="mx-lbl">💨 风声</span><input type="range" class="mx-sl" data-ch="wind" min="0" max="100" value="0"></div>
+          <div class="mx-row"><span class="mx-lbl">☕ 咖啡</span><input type="range" class="mx-sl" data-ch="cafe" min="0" max="100" value="0"></div>
+          <div class="mx-row"><span class="mx-lbl">🌿 森林</span><input type="range" class="mx-sl" data-ch="forest" min="0" max="100" value="0"></div>
+        </div>
+      </div>
+      <button class="ibtn" id="btnMusic" title="背景音乐"><span class="ib-icon">♪</span><span class="ib-label">音乐</span></button>
+      <button class="ibtn" id="btnEye" title="护眼提醒"><span class="ib-icon">👁</span><span class="ib-label" id="eyeLabel">护眼</span></button>
+      <button class="ibtn" id="btnFocus" title="专注模式"><span class="ib-icon">⊙</span><span class="ib-label">专注</span></button>
+      <button class="ibtn ibtn-switch" id="btnSwitch" title="切换场景"><span class="ib-icon">⟲</span><span class="ib-label">切换</span></button>
+    </div>
+  </div>
+  <div class="center">
+    <div class="timer-wrap" id="tWrap">
+      <svg class="timer-svg" viewBox="0 0 200 200"><circle class="tbg" cx="100" cy="100" r="88"/><circle class="tprog" id="tProg" cx="100" cy="100" r="88"/></svg>
+      <div class="timer-inner"><div class="timer-time" id="tTime">25:00</div><div class="timer-lbl" id="tLbl">专注时间</div></div>
+    </div>
+    <div class="tctrls"><button class="tbtn" id="btnReset" title="重置 (R)">↺</button><button class="tbtn go" id="btnGo" title="开始/暂停">▶</button><button class="tbtn" id="btnSkip" title="跳过">⏭</button></div>
+    <div class="tmodes"><button class="tmode on" data-m="focus">专注</button><button class="tmode" data-m="short">短休</button><button class="tmode" data-m="long">长休</button></div>
+    <div class="fdurs" id="fdurs"><span class="fdur" data-d="15">15</span><span class="fdur on" data-d="25">25</span><span class="fdur" data-d="35">35</span><span class="fdur" data-d="45">45</span><span class="fdur" data-d="50">50</span><span class="fdur-unit">min</span></div>
+    <div class="quote-text" id="quote"></div>
+    <div class="sessions">今日 <b id="sDone">0</b> / 目标 <b id="dgNum">4</b> 个番茄钟</div>
+    <div class="dg-bar"><div class="dg-fill" id="dgFill"></div></div>
+    <div class="week-track" id="weekTrack"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="bbtn" id="btnTodo"><span class="bi">📝</span>待办</button>
+    <button class="bbtn" id="btnJournal"><span class="bi">📖</span>日记</button>
+    <button class="bbtn" id="btnAch"><span class="bi">🏆</span>成就</button>
+    <button class="bbtn" id="btnFull"><span class="bi" id="fsIcon">⛶</span><span id="fsText">全屏</span></button>
+  </div>
+</div>
+
+<div id="focusHint"><button class="focus-exit" id="btnExitFocus"><span class="fe-dot"></span>点击退出专注模式</button></div>
+<div id="eyeRest"><div class="er-icon">👁</div><div class="er-text">休息一下眼睛</div><div class="er-sub">看看 6 米外的远处，持续 20 秒</div><div class="er-bar"><div class="er-fill" id="erFill"></div></div></div>
+<div id="completeNotif"><div class="cn-inner"><div class="cn-icon">✦</div><div class="cn-text">专注完成</div><div class="cn-sub">辛苦了，休息一下吧</div><input type="text" class="cn-input" id="cnJournalIn" placeholder="记录刚才做了什么…"><div class="cn-hint">点击任意处关闭</div></div></div>
+
+<div class="panel-overlay" id="panelOverlay"></div>
+<div class="slide-panel right" id="todoPanel">
+  <div class="sp-head"><h2>学习待办</h2><button class="sp-close" id="todoClose">✕</button></div>
+  <div class="sp-body"><div class="todo-add"><input type="text" id="todoIn" placeholder="添加任务…"><button id="todoAddBtn">+</button></div><div class="td-list" id="tdList"></div><div class="td-stat">已完成 <b id="tdDone">0</b> / <b id="tdAll">0</b></div></div>
+</div>
+<div class="slide-panel left" id="journalPanel">
+  <div class="sp-head"><h2>学习日记</h2><button class="sp-close" id="journalClose">✕</button></div>
+  <div class="sp-body" id="journalList"></div>
+</div>
+<div class="slide-panel right" id="achPanel">
+  <div class="sp-head"><h2>成就</h2><button class="sp-close" id="achClose">✕</button></div>
+  <div class="sp-body"><div class="ach-counter" id="achCounter"></div><div id="achList"></div></div>
+</div>
+<div class="ach-toast" id="achToast"><span class="at-icon" id="atIcon"></span><div><div class="at-name" id="atName"></div><div class="at-desc" id="atDesc"></div></div></div>
+
+<script>
+/* ╔══════════════════════════════════════╗
+   ║  全部使用显式变量引用，杜绝隐式问题  ║
+   ╚══════════════════════════════════════╝ */
+
+var $ = function(id){ return document.getElementById(id); };
+var todayKey = function(){ return new Date().toISOString().slice(0,10); };
+function hexRGB(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]}
+
+/* ── DOM 缓存（DOMReady 后赋值） ── */
+var dom = {};
+
+/* ── 常量 ── */
+var CATS={NT:{label:'分析师',sub:'理性 · 创新 · 深邃',color:'#8a9ed6'},NF:{label:'外交家',sub:'共情 · 灵感 · 温暖',color:'#64bd96'},SJ:{label:'守卫者',sub:'秩序 · 踏实 · 传统',color:'#d4a574'},SP:{label:'探险家',sub:'自由 · 冒险 · 鲜活',color:'#e8915a'}};
+var CAT_ORDER=['NT','NF','SJ','SP'];
+var TYPE_ORDER={NT:['INTJ','INTP','ENTJ','ENTP'],NF:['INFJ','INFP','ENFJ','ENFP'],SJ:['ISTJ','ISFJ','ESTJ','ESFJ'],SP:['ISTP','ISFP','ESTP','ESFP']};
+var SCENES={
+INTJ:{name:'建筑师',scene:'星空天文台',cat:'NT',accent:'#8a9ed6',particle:'stars',bg:'radial-gradient(ellipse at 65% 15%,rgba(100,80,220,0.15),transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(40,60,180,0.1),transparent 45%),radial-gradient(ellipse at 80% 80%,rgba(60,40,120,0.08),transparent 40%),linear-gradient(180deg,#05081a,#080e28 30%,#0c1230 60%,#060a1a)',orb:['#6040c0','#3060b0'],snd:{rain:0,fire:0,wind:18,cafe:0,forest:0}},
+INTP:{name:'逻辑学家',scene:'赛博书房',cat:'NT',accent:'#5cc8d8',particle:'rain',bg:'radial-gradient(ellipse at 35% 55%,rgba(0,200,220,0.07),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(120,40,255,0.06),transparent 45%),linear-gradient(180deg,#08080f,#0a0c18 35%,#0e1022 65%,#080810)',orb:['#00b0c0','#6030c0'],snd:{rain:55,fire:0,wind:8,cafe:0,forest:0}},
+ENTJ:{name:'指挥官',scene:'云端总部',cat:'NT',accent:'#7a9fd4',particle:'stars',bg:'radial-gradient(ellipse at 50% 25%,rgba(100,140,220,0.12),transparent 55%),linear-gradient(180deg,#0a0e1a,#101828 40%,#1a2238 70%,#0c1020)',orb:['#5070b8','#3050a0'],snd:{rain:0,fire:0,wind:12,cafe:15,forest:0}},
+ENTP:{name:'辩论家',scene:'暴风灯塔',cat:'NT',accent:'#a8b8e0',particle:'sparkle',bg:'radial-gradient(ellipse at 50% 60%,rgba(180,160,100,0.06),transparent 40%),linear-gradient(180deg,#08080e,#0e1020 30%,#181830 60%,#0a0a18)',orb:['#b0a060','#6050a0'],snd:{rain:60,fire:0,wind:30,cafe:0,forest:0}},
+INFJ:{name:'提倡者',scene:'月光竹林',cat:'NF',accent:'#8ac4a0',particle:'fireflies',bg:'radial-gradient(ellipse at 65% 20%,rgba(200,220,240,0.06),transparent 50%),linear-gradient(180deg,#060e0a,#0a1a12 40%,#0e2018 70%,#080f0a)',orb:['#80d0a0','#408060'],snd:{rain:0,fire:0,wind:25,cafe:0,forest:20}},
+INFP:{name:'调停者',scene:'雨夜书店',cat:'NF',accent:'#d4a86e',particle:'rain',bg:'radial-gradient(ellipse at 50% 75%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1408 35%,#20180e 65%,#120e08)',orb:['#d0a060','#a07040'],snd:{rain:50,fire:10,wind:0,cafe:0,forest:0}},
+ENFJ:{name:'主人公',scene:'朝露花园',cat:'NF',accent:'#80c4a0',particle:'petal',bg:'radial-gradient(ellipse at 50% 35%,rgba(200,220,140,0.08),transparent 50%),linear-gradient(180deg,#101810,#0e1a0e 30%,#12200e 60%,#0a1208)',orb:['#60b080','#40a060'],snd:{rain:0,fire:0,wind:18,cafe:0,forest:30}},
+ENFP:{name:'竞选者',scene:'萤火溪谷',cat:'NF',accent:'#a8d86c',particle:'fireflies',bg:'radial-gradient(ellipse at 40% 50%,rgba(120,200,80,0.06),transparent 50%),linear-gradient(180deg,#060e06,#081408 35%,#0a1a0a 65%,#060c06)',orb:['#80c040','#60a030'],snd:{rain:0,fire:0,wind:10,cafe:0,forest:35}},
+ISTJ:{name:'物流师',scene:'古典图书馆',cat:'SJ',accent:'#c4a070',particle:'dust',bg:'radial-gradient(ellipse at 40% 30%,rgba(200,160,80,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1208 35%,#1e160e 65%,#100c06)',orb:['#c0a050','#907030'],snd:{rain:0,fire:0,wind:5,cafe:0,forest:0}},
+ISFJ:{name:'守卫者',scene:'壁炉暖屋',cat:'SJ',accent:'#d89850',particle:'embers',bg:'radial-gradient(ellipse at 50% 85%,rgba(220,140,50,0.14),transparent 50%),linear-gradient(180deg,#0a0806,#141008 35%,#1a1408 65%,#0e0a06)',orb:['#d08040','#a06030'],snd:{rain:0,fire:65,wind:5,cafe:0,forest:0}},
+ESTJ:{name:'总经理',scene:'清晨自习室',cat:'SJ',accent:'#b0a080',particle:'dust',bg:'radial-gradient(ellipse at 70% 15%,rgba(200,200,180,0.06),transparent 50%),linear-gradient(180deg,#0c0c0e,#121214 35%,#18181a 65%,#0e0e0e)',orb:['#a09870','#808060'],snd:{rain:0,fire:0,wind:8,cafe:10,forest:0}},
+ESFJ:{name:'执政官',scene:'暖阳咖啡屋',cat:'SJ',accent:'#d4a868',particle:'sparkle',bg:'radial-gradient(ellipse at 45% 65%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#181208 35%,#1c1610 65%,#100e08)',orb:['#d0a050','#c08840'],snd:{rain:0,fire:5,wind:5,cafe:50,forest:0}},
+ISTP:{name:'鉴赏家',scene:'深海舱室',cat:'SP',accent:'#5090b8',particle:'bubbles',bg:'radial-gradient(ellipse at 50% 35%,rgba(40,100,160,0.1),transparent 50%),linear-gradient(180deg,#04080e,#060e18 35%,#081220 65%,#040810)',orb:['#2070b0','#1050a0'],snd:{rain:0,fire:0,wind:5,cafe:0,forest:0}},
+ISFP:{name:'探险家',scene:'樱花画室',cat:'SP',accent:'#d890a8',particle:'petal',bg:'radial-gradient(ellipse at 55% 30%,rgba(220,140,180,0.08),transparent 50%),linear-gradient(180deg,#100a10,#1a1018 35%,#1e1420 65%,#120c12)',orb:['#d07090','#b050a0'],snd:{rain:0,fire:0,wind:15,cafe:0,forest:25}},
+ESTP:{name:'企业家',scene:'山顶营地',cat:'SP',accent:'#d87840',particle:'embers',bg:'radial-gradient(ellipse at 50% 90%,rgba(220,100,30,0.14),transparent 50%),linear-gradient(180deg,#0a0808,#12100e 35%,#1a140e 65%,#0e0c08)',orb:['#d06030','#b04020'],snd:{rain:0,fire:55,wind:22,cafe:0,forest:12}},
+ESFP:{name:'表演者',scene:'落日沙滩',cat:'SP',accent:'#e88850',particle:'sparkle',bg:'radial-gradient(ellipse at 50% 50%,rgba(240,120,50,0.1),transparent 50%),linear-gradient(180deg,#180a18,#2a1220 25%,#501a28 50%,#803820 72%,#201008)',orb:['#e07040','#d05060'],snd:{rain:0,fire:0,wind:20,cafe:0,forest:0}}
+};
+var ACHS=[{id:'first',icon:'🍅',name:'第一颗番茄',desc:'完成第一个番茄钟'},{id:'ten',icon:'🌱',name:'初心者',desc:'累计完成10个'},{id:'fifty',icon:'🔥',name:'专注达人',desc:'累计完成50个'},{id:'hundred',icon:'👑',name:'番茄大师',desc:'累计完成100个'},{id:'streak3',icon:'⭐',name:'坚持不懈',desc:'连续3天达标'},{id:'streak7',icon:'🌟',name:'习惯养成',desc:'连续7天达标'},{id:'goal',icon:'🎯',name:'今日达标',desc:'完成今日目标'}];
+var QUOTES=['"学而不思则罔，思而不学则殆。" — 孔子','"千里之行，始于足下。" — 老子','"不积跬步，无以至千里。" — 荀子','"业精于勤，荒于嬉。" — 韩愈','"静以修身，俭以养德。" — 诸葛亮','"天道酬勤，功不唐捐。"','"吾生也有涯，而知也无涯。" — 庄子'];
+var MOODS={NT:{notes:[130.81,155.56,174.61,196,233.08,261.63,311.13],tempo:2.2,vol:0.5},NF:{notes:[130.81,146.83,164.81,196,220,261.63,329.63],tempo:2.8,vol:0.45},SJ:{notes:[130.81,146.83,164.81,174.61,196,220,246.94],tempo:2.0,vol:0.4},SP:{notes:[130.81,155.56,174.61,185,196,233.08,261.63],tempo:2.5,vol:0.5}};
+
+/* ── 全局状态 ── */
+var ST={mbti:null,timer:{mode:'focus',total:1500,remain:1500,running:false,iv:null,sessions:0},todos:[],journal:[],achievements:[],vol:60,focusMin:25,dailyGoal:4,focus:false,eyeRest:true,history:{},theme:'dark',transitioning:false,lastQI:-1,eyeCounter:1200,eyeRestActive:false,currentPanel:null,focusHintTimer:null};
+function loadState(){try{var v=JSON.parse(localStorage.getItem('mbti_room_v10'));if(v){if(v.mbti&&SCENES[v.mbti])ST.mbti=v.mbti;ST.timer.sessions=v.sessions||0;ST.todos=v.todos||[];ST.journal=v.journal||[];ST.achievements=v.ach||[];if(v.vol!=null)ST.vol=v.vol;if(v.fm)ST.focusMin=v.fm;if(v.dg)ST.dailyGoal=v.dg;ST.history=v.history||{};if(v.eyeRest===false)ST.eyeRest=false;if(v.theme)ST.theme=v.theme;}}catch(e){}}
+function saveState(){try{localStorage.setItem('mbti_room_v10',JSON.stringify({mbti:ST.mbti,sessions:ST.timer.sessions,todos:ST.todos,journal:ST.journal,ach:ST.achievements,vol:ST.vol,fm:ST.focusMin,dg:ST.dailyGoal,history:ST.history,eyeRest:ST.eyeRest,theme:ST.theme}));}catch(e){}}
+loadState();
+
+/* ════════════════════════════════════
+   音频引擎 — 全面重写
+   ════════════════════════════════════ */
+var AudioEngine = function(){
+  this.ac = null;
+  this.masterGain = null;
+  this.noiseBuffer = null;
+  this.ch = {};
+  this.ok = false;
+  this.musicOn = false;
+  this.musicTimeouts = [];
+  this.mood = MOODS.NT;
+};
+AudioEngine.prototype.init = function(){
+  if(this.ok) return;
+  try{
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    this.ac = new AC();
+    this.masterGain = this.ac.createGain();
+    this.masterGain.gain.value = ST.vol / 100 * 0.7;
+    this.masterGain.connect(this.ac.destination);
+    this._makeNoiseBuffer();
+    this._buildChannels();
+    this.ok = true;
+  }catch(e){ console.warn('Audio init failed:', e); }
+};
+AudioEngine.prototype._makeNoiseBuffer = function(){
+  var sr = this.ac.sampleRate;
+  var len = sr * 4;
+  var buf = this.ac.createBuffer(2, len, sr);
+  for(var ch = 0; ch < 2; ch++){
+    var d = buf.getChannelData(ch);
+    var b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(var i = 0; i < len; i++){
+      var w = Math.random() * 2 - 1;
+      b0 = 0.99886*b0 + w*0.0555179;
+      b1 = 0.99332*b1 + w*0.0750759;
+      b2 = 0.96900*b2 + w*0.1538520;
+      b3 = 0.86650*b3 + w*0.3104856;
+      b4 = 0.55000*b4 + w*0.5329522;
+      b5 = -0.7616*b5 - w*0.0168980;
+      d[i] = (b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;
+      b6 = w*0.115926;
+    }
+  }
+  this.noiseBuffer = buf;
+};
+AudioEngine.prototype._mkCh = function(name, filterType, freq, Q){
+  var src = this.ac.createBufferSource();
+  src.buffer = this.noiseBuffer;
+  src.loop = true;
+  var f = this.ac.createBiquadFilter();
+  f.type = filterType;
+  f.frequency.value = freq;
+  f.Q.value = Q;
+  var g = this.ac.createGain();
+  g.gain.value = 0;
+  src.connect(f);
+  f.connect(g);
+  g.connect(this.masterGain);
+  src.start();
+  this.ch[name] = g;
+};
+AudioEngine.prototype._buildChannels = function(){
+  this._mkCh('rain', 'bandpass', 3000, 0.5);
+  this._mkCh('fire', 'lowpass', 400, 1.0);
+  this._mkCh('wind', 'bandpass', 400, 0.3);
+  this._mkCh('cafe', 'bandpass', 1200, 0.8);
+  this._mkCh('forest', 'bandpass', 2000, 0.5);
+};
+AudioEngine.prototype.applySnd = function(sndMap){
+  if(!this.ok) return;
+  var ct = this.ac.currentTime;
+  for(var k in sndMap){
+    if(this.ch[k]){
+      this.ch[k].gain.setTargetAtTime(sndMap[k] / 100 * 0.35, ct, 0.5);
+    }
+  }
+};
+AudioEngine.prototype.setCh = function(name, val){
+  if(!this.ok) return;
+  var ct = this.ac.currentTime;
+  if(name === 'master'){
+    this.masterGain.gain.setTargetAtTime(val / 100 * 0.7, ct, 0.1);
+  } else if(this.ch[name]){
+    this.ch[name].gain.setTargetAtTime(val / 100 * 0.35, ct, 0.3);
+  }
+};
+AudioEngine.prototype.silence = function(){
+  if(!this.ok) return;
+  var ct = this.ac.currentTime;
+  for(var k in this.ch){
+    this.ch[k].gain.setTargetAtTime(0, ct, 0.3);
+  }
+};
+AudioEngine.prototype.setMood = function(cat){
+  this.mood = MOODS[cat] || MOODS.NT;
+};
+/* ── 完成提示铃 ── */
+AudioEngine.prototype.bell = function(){
+  if(!this.ac) return;
+  var ct = this.ac.currentTime;
+  var freqs = [523.25, 659.25, 783.99];
+  var self = this;
+  freqs.forEach(function(f, i){
+    var o = self.ac.createOscillator();
+    var g = self.ac.createGain();
+    o.type = 'sine';
+    o.frequency.value = f;
+    o.connect(g);
+    g.connect(self.masterGain);
+    var t = ct + i * 0.15;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.08, t + 0.08);
+    g.gain.setTargetAtTime(0, t + 0.08, 0.8);
+    o.start(t);
+    o.stop(t + 3.5);
+  });
+};
+/* ── 音乐生成 — 完全重写，干净的信封 + 强制止音 ── */
+AudioEngine.prototype.toggleMusic = function(){
+  var self = this;
+  if(!this.ok) this.init();
+  if(!this.ok) return false;
+  if(this.musicOn){
+    this.stopMusic();
+    return false;
+  }
+  this.musicOn = true;
+  if(this.ac.state === 'suspended') this.ac.resume();
+  var ac = this.ac, mood = this.mood;
+  var notes = mood.notes, tempo = mood.tempo;
+  var noteVol = mood.vol * 0.55;
+  var padVol = noteVol * 0.5;
+  /* 混响 */
+  var conv = ac.createConvolver();
+  var sr = ac.sampleRate, len = sr * 2.5;
+  var imp = ac.createBuffer(2, len, sr);
+  for(var c = 0; c < 2; c++){
+    var dd = imp.getChannelData(c);
+    for(var j = 0; j < len; j++) dd[j] = (Math.random()*2-1) * Math.pow(1 - j/len, 2.2);
+  }
+  conv.buffer = imp;
+  var wet = ac.createGain(); wet.gain.value = 0.28;
+  conv.connect(wet); wet.connect(this.masterGain);
+  /* 播放音符 */
+  function playNote(freq, dur, vol, t0){
+    var osc = ac.createOscillator();
+    var g = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    osc.connect(g); g.connect(conv); g.connect(self.masterGain);
+    var s = Math.max(t0, ac.currentTime + 0.01);
+    g.gain.setValueAtTime(0, s);
+    g.gain.linearRampToValueAtTime(vol, s + 0.06);
+    var relStart = s + dur * 0.6;
+    g.gain.setValueAtTime(vol, relStart);
+    g.gain.setTargetAtTime(0.0001, relStart, dur * 0.25);
+    osc.start(s);
+    var stopT = s + dur + 2.0;
+    g.gain.setValueAtTime(0, stopT);
+    osc.stop(stopT + 0.1);
+  }
+  /* 旋律循环 */
+  var nextT = ac.currentTime + 0.5;
+  var padOn = true;
+  function schedMelody(){
+    if(!self.musicOn) return;
+    var delay = (0.7 + Math.random() * 0.6) * tempo;
+    var freq = notes[Math.floor(Math.random() * notes.length)];
+    var dur = 1.2 + Math.random() * 1.5;
+    playNote(freq, dur, noteVol, nextT);
+    nextT += delay;
+    var tid = setTimeout(schedMelody, delay * 700);
+    self.musicTimeouts.push(tid);
+  }
+  function schedPad(){
+    if(!self.musicOn || !padOn) return;
+    for(var k = 0; k < 2; k++){
+      var f = notes[Math.floor(Math.random() * notes.length)] * (Math.random() > 0.5 ? 1 : 0.5);
+      playNote(f, 2.5 + Math.random() * 2, padVol, ac.currentTime);
+    }
+    var tid2 = setTimeout(schedPad, tempo * 2800 + Math.random() * 2000);
+    self.musicTimeouts.push(tid2);
+  }
+  schedMelody();
+  setTimeout(schedPad, 1000);
+  return true;
+};
+AudioEngine.prototype.stopMusic = function(){
+  this.musicOn = false;
+  for(var i = 0; i < this.musicTimeouts.length; i++){
+    clearTimeout(this.musicTimeouts[i]);
+  }
+  this.musicTimeouts = [];
+};
+
+/* ── 粒子 ── */
+function ParticleCanvas(c){var s=this;s.c=c;s.x=c.getContext('2d');s.p=[];s.t='';s.aid=null;window.addEventListener('resize',function(){c.width=innerWidth;c.height=innerHeight;})}
+ParticleCanvas.prototype.set=function(t){this.t=t;this.p=[];var W=this.c.width=innerWidth,H=this.c.height=innerHeight,p=this.p,i;if(t==='stars')for(i=0;i<160;i++)p.push({x:Math.random()*W,y:Math.random()*H*.85,r:Math.random()*1.5+.3,o:Math.random(),ph:Math.random()*6.28,sp:Math.random()*.015+.004});else if(t==='rain')for(i=0;i<200;i++)p.push({x:Math.random()*1.3*W-.15*W,y:Math.random()*H,len:Math.random()*16+8,vy:Math.random()*7+9,o:Math.random()*.22+.06});else if(t==='fireflies')for(i=0;i<35;i++)p.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.5+1.2,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,o:Math.random(),ph:Math.random()*6.28,sp:Math.random()*.02+.006});else if(t==='embers')for(i=0;i<50;i++)p.push({x:W*.3+Math.random()*W*.4,y:H*.75+Math.random()*H*.25,r:Math.random()*2+.5,vx:(Math.random()-.5)*.7,vy:-(Math.random()*1.4+.4),o:Math.random()*.7+.2,life:Math.random()});else if(t==='petal')for(i=0;i<28;i++)p.push({x:Math.random()*1.3*W-.15*W,y:Math.random()*1.2*H-.1*H,r:Math.random()*5+2.5,vx:Math.random()*.7+.15,vy:Math.random()*.5+.25,rot:Math.random()*6.28,vr:(Math.random()-.5)*.025,o:Math.random()*.35+.12});else if(t==='sparkle')for(i=0;i<50;i++)p.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.5,o:0,ph:Math.random()*6.28,sp:Math.random()*.03+.008});else if(t==='dust')for(i=0;i<55;i++)p.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.4,vx:(Math.random()-.5)*.2,vy:Math.random()*.15+.04,o:Math.random()*.3+.08,ph:Math.random()*6.28});else if(t==='bubbles')for(i=0;i<35;i++)p.push({x:Math.random()*W,y:H+Math.random()*100,r:Math.random()*6+2,vy:-(Math.random()*.5+.15),vx:(Math.random()-.5)*.15,o:Math.random()*.2+.05,ph:Math.random()*6.28})};
+ParticleCanvas.prototype.draw=function(){var W=this.c.width,H=this.c.height,ctx=this.x,now=Date.now(),sc=SCENES[ST.mbti],aRGB=sc?hexRGB(sc.accent):[255,255,255];ctx.clearRect(0,0,W,H);for(var i=0,p;i<this.p.length;i++){p=this.p[i];if(this.t==='stars'){p.ph+=p.sp;p.o=(Math.sin(p.ph)+1)/2*.7+.05;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fillStyle='rgba(210,215,250,'+p.o+')';ctx.fill()}else if(this.t==='rain'){p.x+=1.2;p.y+=p.vy;if(p.y>H){p.y=-p.len;p.x=Math.random()*1.3*W-.15*W}ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+1.2,p.y+p.len);ctx.strokeStyle='rgba(170,190,220,'+p.o+')';ctx.lineWidth=.7;ctx.stroke()}else if(this.t==='fireflies'){p.ph+=p.sp;p.x+=p.vx+Math.sin(p.ph)*.25;p.y+=p.vy+Math.cos(p.ph)*.25;p.o=(Math.sin(p.ph*2)+1)/2*.55+.08;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);g.addColorStop(0,'rgba('+aRGB.join(',')+','+p.o+')');g.addColorStop(1,'rgba('+aRGB.join(',')+',0)');ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,6.28);ctx.fillStyle=g;ctx.fill()}else if(this.t==='embers'){p.x+=p.vx+Math.sin(now*.002+p.life*10)*.25;p.y+=p.vy;p.o-=.003;p.life-=.002;if(p.o<=0||p.y<0||p.life<=0){p.x=W*.3+Math.random()*W*.4;p.y=H*.75+Math.random()*H*.2;p.o=Math.random()*.6+.3;p.life=1;p.vy=-(Math.random()*1.4+.4)}ctx.beginPath();ctx.arc(p.x,p.y,p.r*p.life,0,6.28);ctx.fillStyle='rgba(255,'+Math.floor(110+p.life*90)+','+Math.floor(p.life*35)+','+p.o*p.life+')';ctx.fill()}else if(this.t==='petal'){p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vx+=Math.sin(now*.001+p.x*.01)*.015;if(p.y>H+20||p.x>W+30){p.x=-20;p.y=-20+Math.random()*H*.3}ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.beginPath();ctx.ellipse(0,0,p.r,p.r*.45,0,0,6.28);ctx.fillStyle='rgba(220,160,180,'+p.o+')';ctx.fill();ctx.restore()}else if(this.t==='sparkle'){p.ph+=p.sp;p.o=Math.max(0,Math.sin(p.ph))*.65;if(p.o<.03){p.x=Math.random()*W;p.y=Math.random()*H}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fillStyle='rgba(255,235,210,'+p.o+')';ctx.fill()}else if(this.t==='dust'){p.x+=p.vx;p.y+=p.vy;p.o=.08+Math.sin(now*.0008+p.ph)*.06;if(p.y>H+5){p.y=-5;p.x=Math.random()*W}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fillStyle='rgba('+aRGB.join(',')+','+p.o+')';ctx.fill()}else if(this.t==='bubbles'){p.y+=p.vy;p.x+=p.vx+Math.sin(now*.002+p.ph)*.15;p.o-=.0008;if(p.y<-20||p.o<=0){p.y=H+10+Math.random()*60;p.x=Math.random()*W;p.o=Math.random()*.18+.04}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.strokeStyle='rgba(140,180,220,'+p.o+')';ctx.lineWidth=.8;ctx.stroke()}}var s=this;this.aid=requestAnimationFrame(function(){s.draw()})};
+ParticleCanvas.prototype.start=function(){this.c.width=innerWidth;this.c.height=innerHeight;if(!this.aid)this.draw()};
+
+/* ── 实例 ── */
+var fx = new ParticleCanvas(document.getElementById('fx'));
+var snd = new AudioEngine();
+
+/* ── 工具函数 ── */
+function showAchToast(id){for(var i=0;i<ACHS.length;i++){if(ACHS[i].id===id){var a=ACHS[i];dom.atIcon.textContent=a.icon;dom.atName.textContent='成就解锁: '+a.name;dom.atDesc.textContent=a.desc;dom.achToast.classList.add('show');setTimeout(function(){dom.achToast.classList.remove('show')},4000);break}}}
+function getStreak(){var streak=0,today=new Date();for(var i=1;i<365;i++){var d=new Date(today);d.setDate(d.getDate()-i);var k=d.toISOString().slice(0,10);if((ST.history[k]||0)>=ST.dailyGoal)streak++;else break}return streak}
+function checkAchievements(){var s=ST.timer.sessions,streak=getStreak(),today=todayKey(),unlocked=[];if(s>=1)unlocked.push('first');if(s>=10)unlocked.push('ten');if(s>=50)unlocked.push('fifty');if(s>=100)unlocked.push('hundred');if(streak>=3)unlocked.push('streak3');if(streak>=7)unlocked.push('streak7');if((ST.history[today]||0)>=ST.dailyGoal)unlocked.push('goal');for(var i=0;i<unlocked.length;i++){if(ST.achievements.indexOf(unlocked[i])===-1){ST.achievements.push(unlocked[i]);showAchToast(unlocked[i])}}saveState()}
+function getFocusTotal(){return ST.focusMin*60}
+
+/* ── UI 更新 ── */
+function updClock(){var n=new Date();var h=n.getHours(),m=n.getMinutes();dom.clock.textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m;var ds=['日','一','二','三','四','五','六'];dom.date.textContent=n.getFullYear()+'年'+(n.getMonth()+1)+'月'+n.getDate()+'日 星期'+ds[n.getDay()]}
+function updTimerDisplay(){var m=Math.floor(ST.timer.remain/60),s=ST.timer.remain%60;dom.tTime.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;dom.tProg.style.strokeDashoffset=553*(1-ST.timer.remain/ST.timer.total);var lb={focus:'专注时间',short:'短休时间',long:'长休休息'};dom.tLbl.textContent=lb[ST.timer.mode]}
+function updDailyGoal(){var today=todayKey();var done=ST.history[today]||0;dom.sDone.textContent=done;dom.dgNum.textContent=ST.dailyGoal;dom.dgFill.style.width=Math.min(done/ST.dailyGoal*100,100)+'%'}
+function updDurBtns(){var bs=document.querySelectorAll('.fdur');for(var i=0;i<bs.length;i++)bs[i].classList.toggle('on',parseInt(bs[i].getAttribute('data-d'))===ST.focusMin)}
+function applyTheme(){document.body.classList.toggle('light',ST.theme==='light');dom.themeText.textContent=ST.theme==='light'?'夜间模式':'日间模式'}
+function showQuote(){var i;do{i=Math.floor(Math.random()*QUOTES.length)}while(i===ST.lastQI&&QUOTES.length>1);ST.lastQI=i;dom.quote.textContent=QUOTES[i]}
+function renderWeek(){var wrap=dom.weekTrack,h='',today=new Date();for(var i=6;i>=0;i--){var d=new Date(today);d.setDate(d.getDate()-i);var key=d.toISOString().slice(0,10),count=(ST.history[key]||0),sz=Math.min(6+count*2,16),isT=i===0;h+='<div class="wt-dot'+(count>0?' active':'')+(isT?' today':'')+'" style="width:'+sz+'px;height:'+sz+'px" title="'+key.slice(5)+': '+count+'"></div>'}wrap.innerHTML=h}
+function renderTodo(){var list=dom.tdList;list.innerHTML='';for(var i=0;i<ST.todos.length;i++){var t=ST.todos[i],d=document.createElement('div');d.className='td-item'+(t.done?' done':'');d.innerHTML='<div class="td-ck" data-i="'+i+'">'+(t.done?'✓':'')+'</div><div class="td-txt">'+t.text+'</div><div class="td-del" data-i="'+i+'">✕</div>';list.appendChild(d)}list.querySelectorAll('.td-ck').forEach(function(el){el.onclick=function(){var idx=parseInt(this.getAttribute('data-i'));ST.todos[idx].done=!ST.todos[idx].done;renderTodo();saveState()}});list.querySelectorAll('.td-del').forEach(function(el){el.onclick=function(){ST.todos.splice(parseInt(this.getAttribute('data-i')),1);renderTodo();saveState()}});var dn=0;for(var x=0;x<ST.todos.length;x++)if(ST.todos[x].done)dn++;dom.tdDone.textContent=dn;dom.tdAll.textContent=ST.todos.length}
+function renderJournal(){var wrap=dom.journalList;if(!ST.journal.length){wrap.innerHTML='<div class="j-empty">暂无学习日记</div>';return}var h='';for(var i=0;i<ST.journal.length;i++){var e=ST.journal[i];h+='<div class="j-entry"><div class="j-time">'+e.time+'</div><div class="j-text">'+e.text+'</div></div>'}wrap.innerHTML=h}
+function renderAchievements(){dom.achCounter.textContent='已解锁 '+ST.achievements.length+' / '+ACHS.length;var h='';for(var i=0;i<ACHS.length;i++){var a=ACHS[i],unlocked=ST.achievements.indexOf(a.id)!==-1;h+='<div class="ach-item'+(unlocked?'':' locked')+'"><div class="ach-icon">'+(unlocked?a.icon:'🔒')+'</div><div><div class="ach-name">'+a.name+'</div><div class="ach-desc">'+a.desc+'</div></div></div>'}dom.achList.innerHTML=h}
+
+/* ── 核心操作 ── */
+function loadScene(tp){var sc=SCENES[tp];if(!sc)return;dom.sceneBg.style.background=sc.bg;document.documentElement.style.setProperty('--accent',sc.accent);var rgb=hexRGB(sc.accent);document.documentElement.style.setProperty('--glow','rgba('+rgb.join(',')+',.25)');dom.bType.textContent=tp;dom.bScene.textContent=sc.scene;dom.orb1.style.cssText='background:'+sc.orb[0]+';width:380px;height:380px;left:12%;top:22%;opacity:.12';dom.orb2.style.cssText='background:'+sc.orb[1]+';width:300px;height:300px;left:68%;top:58%;opacity:.09';fx.set(sc.particle);snd.init();snd.setMood(sc.cat);snd.applySnd(sc.snd);document.querySelectorAll('.mx-sl').forEach(function(sl){var ch=sl.getAttribute('data-ch');if(ch in sc.snd)sl.value=sc.snd[ch];else if(ch==='master')sl.value=ST.vol});updDurBtns();showQuote()}
+function selectMBTI(tp){if(ST.transitioning)return;ST.transitioning=true;ST.mbti=tp;saveState();dom.selection.classList.add('hidden');loadScene(tp);fx.start();setTimeout(function(){dom.studyUI.classList.add('show');ST.transitioning=false},450)}
+function switchMBTI(){if(ST.transitioning)return;ST.transitioning=true;closePanel();stopTimer();if(ST.focus){ST.focus=false;document.body.classList.remove('focus');dom.focusHint.classList.remove('active')}if(ST.eyeRestActive){dom.eyeRest.classList.remove('show');ST.eyeRestActive=false}dom.completeNotif.classList.remove('show');snd.silence();snd.stopMusic();dom.btnMusic.classList.remove('on');dom.studyUI.classList.remove('show');setTimeout(function(){dom.selection.classList.remove('hidden');dom.selection.scrollTop=0;ST.transitioning=false},450)}
+function toggleTimer(){if(ST.timer.running){stopTimer();return}ST.timer.running=true;dom.btnGo.textContent='⏸';dom.tWrap.classList.add('running');ST.eyeCounter=1200;ST.timer.iv=setInterval(function(){if(ST.timer.remain<=0){stopTimer();if(ST.timer.mode==='focus')showCompletion();else snd.bell();return}ST.timer.remain--;updTimerDisplay();if(ST.eyeRest&&ST.timer.mode==='focus'){ST.eyeCounter--;if(ST.eyeCounter<=0){showEyeRest();ST.eyeCounter=1200}dom.eyeLabel.textContent=Math.ceil(ST.eyeCounter/60)+'m'}},1000)}
+function stopTimer(){clearInterval(ST.timer.iv);ST.timer.running=false;dom.btnGo.textContent='▶';dom.tWrap.classList.remove('running');dom.eyeLabel.textContent='护眼'}
+function resetTimer(){stopTimer();var d={focus:getFocusTotal(),short:300,long:900};ST.timer.total=d[ST.timer.mode];ST.timer.remain=ST.timer.total;ST.eyeCounter=1200;updTimerDisplay();dom.eyeLabel.textContent='护眼'}
+function setTimerMode(mode){ST.timer.mode=mode;document.querySelectorAll('.tmode').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-m')===mode)});dom.fdurs.classList.toggle('hide',mode!=='focus');resetTimer()}
+function showCompletion(){snd.bell();ST.timer.sessions++;var t=todayKey();if(!ST.history[t])ST.history[t]=0;ST.history[t]++;saveState();updDailyGoal();renderWeek();checkAchievements();dom.cnJournalIn.value='';dom.completeNotif.classList.add('show');dom.completeNotif._ac=setTimeout(function(){dom.completeNotif.classList.remove('show');saveJournal()},8000)}
+function saveJournal(){var v=dom.cnJournalIn.value.trim();if(!v)return;var now=new Date();ST.journal.unshift({text:v,time:now.toLocaleDateString()+' '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});dom.cnJournalIn.value='';saveState();renderJournal()}
+function showEyeRest(){if(ST.eyeRestActive)return;ST.eyeRestActive=true;dom.eyeRest.classList.add('show');var fill=dom.erFill,sec=20;fill.style.width='100%';var iv=setInterval(function(){sec--;fill.style.width=(sec/20*100)+'%';if(sec<=0){ST.eyeRestActive=false;dom.eyeRest.classList.remove('show');clearInterval(iv)}},1000)}
+function openPanel(name){closePanel();ST.currentPanel=name;dom.panelOverlay.classList.add('open');dom[name+'Panel'].classList.add('open')}
+function closePanel(){dom.panelOverlay.classList.remove('open');if(ST.currentPanel)dom[ST.currentPanel+'Panel'].classList.remove('open');ST.currentPanel=null}
+function showFocusHint(){dom.focusHint.classList.add('active');clearTimeout(ST.focusHintTimer);ST.focusHintTimer=setTimeout(function(){dom.focusHint.classList.remove('active')},2500)}
+
+/* ═══════════════════════════════════════════
+   启动入口 — 所有事件在此注册
+   ═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+  /* DOM 缓存 */
+  dom.clock = $('clock'); dom.date = $('date');
+  dom.bType = $('bType'); dom.bScene = $('bScene');
+  dom.tTime = $('tTime'); dom.tProg = $('tProg'); dom.tLbl = $('tLbl'); dom.tWrap = $('tWrap');
+  dom.btnGo = $('btnGo'); dom.btnReset = $('btnReset'); dom.btnSkip = $('btnSkip');
+  dom.fdurs = $('fdurs');
+  dom.quote = $('quote'); dom.sDone = $('sDone'); dom.dgNum = $('dgNum'); dom.dgFill = $('dgFill');
+  dom.weekTrack = $('weekTrack');
+  dom.volSlider = $('volSlider'); dom.volIcon = $('volIcon'); dom.mixerPop = $('mixerPop');
+  dom.btnMusic = $('btnMusic'); dom.btnEye = $('btnEye'); dom.btnFocus = $('btnFocus'); dom.btnSwitch = $('btnSwitch');
+  dom.eyeLabel = $('eyeLabel');
+  dom.btnTodo = $('btnTodo'); dom.btnJournal = $('btnJournal'); dom.btnAch = $('btnAch'); dom.btnFull = $('btnFull');
+  dom.selection = $('selection'); dom.studyUI = $('studyUI'); dom.selCats = $('selCats');
+  dom.panelOverlay = $('panelOverlay');
+  dom.todoPanel = $('todoPanel'); dom.todoClose = $('todoClose');
+  dom.journalPanel = $('journalPanel'); dom.journalClose = $('journalClose');
+  dom.achPanel = $('achPanel'); dom.achClose = $('achClose');
+  dom.achCounter = $('achCounter'); dom.achList = $('achList');
+  dom.tdList = $('tdList'); dom.tdDone = $('tdDone'); dom.tdAll = $('tdAll');
+  dom.todoIn = $('todoIn'); dom.todoAddBtn = $('todoAddBtn');
+  dom.journalList = $('journalList');
+  dom.focusHint = $('focusHint'); dom.btnExitFocus = $('btnExitFocus');
+  dom.eyeRest = $('eyeRest'); dom.erFill = $('erFill');
+  dom.completeNotif = $('completeNotif'); dom.cnJournalIn = $('cnJournalIn');
+  dom.achToast = $('achToast'); dom.atIcon = $('atIcon'); dom.atName = $('atName'); dom.atDesc = $('atDesc');
+  dom.sceneBg = $('sceneBg'); dom.orb1 = $('orb1'); dom.orb2 = $('orb2');
+  dom.fsText = $('fsText'); dom.themeText = $('themeText');
+  dom.sgBtns = $('sgBtns');
+  dom.btnTheme = $('btnTheme'); dom.btnRandom = $('btnRandom');
+
+  /* 首屏构建 */
+  buildSelection();
+  renderTodo(); renderJournal(); updClock(); updDailyGoal(); updTimerDisplay(); renderWeek(); applyTheme(); updDurBtns();
+  dom.volSlider.value = ST.vol;
+  dom.fdurs.classList.toggle('hide', ST.timer.mode !== 'focus');
+
+  /* 定时器 */
+  setInterval(updClock, 10000);
+  setInterval(showQuote, 25000);
+
+  /* ── 计时器按钮 ── */
+  dom.btnGo.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); toggleTimer(); });
+  dom.btnReset.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); resetTimer(); });
+  dom.btnSkip.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation();
+    if(ST.timer.running){ ST.timer.remain = 1; } else {
+      ST.timer.remain = 0; updTimerDisplay();
+      if(ST.timer.mode === 'focus'){ showCompletion(); } else { snd.bell(); }
+    }
+  });
+
+  /* 计时模式 & 时长 */
+  document.querySelectorAll('.tmode').forEach(function(btn){
+    btn.addEventListener('click', function(){ setTimerMode(this.getAttribute('data-m')); });
+  });
+  document.querySelectorAll('.fdur').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      ST.focusMin = parseInt(this.getAttribute('data-d')); updDurBtns(); saveState();
+      if(ST.timer.mode === 'focus' && !ST.timer.running){ ST.timer.total = getFocusTotal(); ST.timer.remain = getFocusTotal(); updTimerDisplay(); }
+    });
+  });
+
+  /* ── 面板 ── */
+  dom.btnTodo.addEventListener('click', function(){ openPanel('todo'); renderTodo(); });
+  dom.btnJournal.addEventListener('click', function(){ openPanel('journal'); renderJournal(); });
+  dom.btnAch.addEventListener('click', function(){ openPanel('ach'); renderAchievements(); });
+  dom.todoClose.addEventListener('click', closePanel);
+  dom.journalClose.addEventListener('click', closePanel);
+  dom.achClose.addEventListener('click', closePanel);
+  dom.panelOverlay.addEventListener('click', closePanel);
+
+  /* 待办 */
+  function addTodo(){var v=dom.todoIn.value.trim();if(!v)return;ST.todos.push({text:v,done:false});dom.todoIn.value='';renderTodo();saveState()}
+  dom.todoAddBtn.addEventListener('click', addTodo);
+  dom.todoIn.addEventListener('keydown', function(e){ if(e.key==='Enter') addTodo(); });
+
+  /* ── 音量 & 混音器 ── */
+  dom.volSlider.addEventListener('input', function(){
+    ST.vol = parseInt(this.value);
+    if(snd.ok) snd.masterGain.gain.setTargetAtTime(ST.vol/100*0.7, snd.ac.currentTime, 0.1);
+    saveState();
+  });
+  dom.volIcon.addEventListener('click', function(e){ e.stopPropagation(); dom.mixerPop.classList.toggle('open'); });
+  document.addEventListener('click', function(e){ if(!document.getElementById('volWrap').contains(e.target)) dom.mixerPop.classList.remove('open'); });
+  document.querySelectorAll('.mx-sl').forEach(function(sl){
+    sl.addEventListener('input', function(){ snd.init(); snd.setCh(this.getAttribute('data-ch'), parseInt(this.value));
+      if(this.getAttribute('data-ch')==='master'){ ST.vol=parseInt(this.value); dom.volSlider.value=ST.vol; saveState(); }
+    });
+  });
+
+  /* ── 音乐 ── */
+  dom.btnMusic.addEventListener('click', function(){
+    snd.init();
+    if(snd.ac && snd.ac.state==='suspended'){
+      var el = this;
+      snd.ac.resume().then(function(){ el.classList.toggle('on', snd.toggleMusic()); });
+      return;
+    }
+    this.classList.toggle('on', snd.toggleMusic());
+  });
+
+  /* ── 护眼 ── */
+  dom.btnEye.addEventListener('click', function(){ ST.eyeRest=!ST.eyeRest; this.classList.toggle('on',ST.eyeRest); saveState(); if(!ST.eyeRest) dom.eyeLabel.textContent='护眼'; });
+  dom.btnEye.classList.toggle('on', ST.eyeRest);
+
+  /* ── 专注模式 ── */
+  dom.btnFocus.addEventListener('click', function(){
+    ST.focus = !ST.focus;
+    document.body.classList.toggle('focus', ST.focus);
+    if(ST.focus) showFocusHint();
+    else dom.focusHint.classList.remove('active');
+  });
+  dom.btnExitFocus.addEventListener('click', function(e){ e.stopPropagation(); ST.focus=false; document.body.classList.remove('focus'); dom.focusHint.classList.remove('active'); });
+
+  /* ── 切换 ── */
+  dom.btnSwitch.addEventListener('click', switchMBTI);
+
+  /* ── 全屏 [已修复] ── */
+  dom.btnFull.addEventListener('click', function(e){
+    e.preventDefault(); e.stopPropagation();
+    var doc = document;
+    var el = doc.documentElement;
+    var isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+    if(!isFs){
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen).call(el).catch(function(){});
+    } else {
+      (doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen).call(doc).catch(function(){});
+    }
+  });
+  function updFS(){
+    var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+    dom.fsText.textContent = isFs ? '退出全屏' : '全屏';
+  }
+  document.addEventListener('fullscreenchange', updFS);
+  document.addEventListener('webkitfullscreenchange', updFS);
+
+  /* ── 首页按钮 ── */
+  dom.btnRandom.addEventListener('click', function(){ var t=Object.keys(SCENES); selectMBTI(t[Math.floor(Math.random()*t.length)]); });
+  dom.btnTheme.addEventListener('click', function(){ ST.theme=ST.theme==='light'?'dark':'light'; applyTheme(); saveState(); });
+  dom.sgBtns.querySelectorAll('.sg-btn').forEach(function(btn){
+    var g = parseInt(btn.getAttribute('data-g'));
+    btn.classList.toggle('on', g === ST.dailyGoal);
+    btn.addEventListener('click', function(){
+      ST.dailyGoal = parseInt(this.getAttribute('data-g'));
+      dom.sgBtns.querySelectorAll('.sg-btn').forEach(function(b){ b.classList.remove('on'); });
+      this.classList.add('on'); saveState(); updDailyGoal();
+    });
+  });
+
+  /* ── 完成通知 ── */
+  dom.completeNotif.addEventListener('click', function(e){
+    if(e.target.tagName !== 'INPUT'){ clearTimeout(this._ac); saveJournal(); this.classList.remove('show'); }
+  });
+
+  /* ── 键盘 ── */
+  document.addEventListener('keydown', function(e){
+    if(e.target.tagName === 'INPUT') return;
+    if(e.code === 'Space'){ e.preventDefault(); toggleTimer(); }
+    else if(e.code === 'KeyR'){ resetTimer(); }
+    else if(e.code === 'KeyF'){ dom.btnFocus.click(); }
+    else if(e.code === 'Escape'){
+      if(dom.completeNotif.classList.contains('show')) dom.completeNotif.classList.remove('show');
+      else if(ST.currentPanel) closePanel();
+      else if(ST.focus) dom.btnExitFocus.click();
+    }
+  });
+
+  /* ── 视差 ── */
+  document.addEventListener('mousemove', function(e){
+    if(ST.mbti && SCENES[ST.mbti]){
+      var x=(e.clientX/innerWidth-.5)*8, y=(e.clientY/innerHeight-.5)*8;
+      dom.sceneBg.style.transform='translate('+x+'px,'+y+'px) scale(1.04)';
+    }
+    if(ST.focus) showFocusHint();
+  });
+
+  /* ── 有保存数据直接进入 ── */
+  if(ST.mbti && SCENES[ST.mbti]){
+    dom.selection.classList.add('hidden');
+    loadScene(ST.mbti);
+    fx.start();
+    setTimeout(function(){ dom.studyUI.classList.add('show'); }, 200);
+  }
+});
+
+/* ── 首页类型卡构建 ── */
+function buildSelection(){
+  var wrap = dom.selCats;
+  wrap.innerHTML = '';
+  for(var ci = 0; ci < CAT_ORDER.length; ci++){
+    var ck = CAT_ORDER[ci], cv = CATS[ck];
+    var sec = document.createElement('div');
+    sec.className = 'sel-cat'; sec.setAttribute('data-cat', ck);
+    var h = '<div class="cat-head"><span class="cat-dot" style="background:'+cv.color+'"></span><span class="cat-title">'+cv.label+'</span><span class="cat-tag"> · '+cv.sub+'</span></div><div class="type-row">';
+    var tps = TYPE_ORDER[ck];
+    for(var ti = 0; ti < tps.length; ti++){
+      var tp = tps[ti], sc = SCENES[tp];
+      h += '<div class="type-card" data-type="'+tp+'"><div class="tc-code" style="color:'+sc.accent+'">'+tp+'</div><div class="tc-name">'+sc.name+'</div><div class="tc-scene">'+sc.scene+'</div></div>';
+    }
+    h += '</div>'; sec.innerHTML = h; wrap.appendChild(sec);
+  }
+  wrap.querySelectorAll('.type-card').forEach(function(card){
+    card.addEventListener('click', function(){ selectMBTI(this.getAttribute('data-type')); });
+  });
+}
+</script>
+</body>
+</html>
