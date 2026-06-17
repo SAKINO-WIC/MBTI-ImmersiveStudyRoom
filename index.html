@@ -388,7 +388,7 @@ body.idle #studyUI{opacity:0.7;transition:opacity 2s ease}
 <div id="vignette"></div>
 
 <div id="selection">
-  <div class="sel-head"><h1>找到你的学习氛围</h1><p>选择你的 MBTI 人格类型，开启专属于你的沉浸式自习空间</p></div>
+  <div class="sel-head"><h1 id="selTitle" style="cursor:pointer">找到你的学习氛围</h1><p>选择你的 MBTI 人格类型，开启专属于你的沉浸式自习空间</p></div>
   <div class="sel-cats" id="selCats"></div>
   <div class="sel-goal-row">
     <span class="sg-label">每日番茄目标</span>
@@ -1582,6 +1582,18 @@ document.addEventListener('DOMContentLoaded', function(){
     loadScene(ST.mbti);
     fx.start();
     setTimeout(function(){ dom.studyUI.classList.add('show'); }, 200);
+  }
+
+  /* ── 彩蛋：阿拉斯加海湾 ── */
+  var _alaskaClicks=0,_alaskaTimer=null;
+  var selTitle=document.getElementById('selTitle');
+  if(selTitle){
+    selTitle.addEventListener('click',function(){
+      _alaskaClicks++;
+      clearTimeout(_alaskaTimer);
+      _alaskaTimer=setTimeout(function(){_alaskaClicks=0},1500);
+      if(_alaskaClicks>=5){_alaskaClicks=0;window.location.href='alaska.html'}
+    });
   }
 });
 
