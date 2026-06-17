@@ -8,6 +8,11 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+*.code-workspace
 
 # Build
 dist/
+
+# Auto-generated
+*.md
+!README.md
