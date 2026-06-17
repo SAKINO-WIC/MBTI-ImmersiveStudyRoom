@@ -1020,7 +1020,6 @@ AudioEngine.prototype.playExternalBGM = function(){
 AudioEngine.prototype.stopExternalBGM = function(){
   if(this.externalBGM){
     this.externalBGM.pause();
-    this.externalBGM.currentTime = 0;
   }
 };
 AudioEngine.prototype.stopMusic = function(){
@@ -1213,18 +1212,17 @@ document.addEventListener('DOMContentLoaded', function(){
         snd.externalBGM.volume = ST.vol / 100 * 0.5;
         snd.externalBGM.play().then(function(){
           updMusicIcon(true);
-        }).catch(function(e){
-          console.log('BGM autoplay blocked, muted fallback');
-          snd.externalBGM.muted = true;
-          snd.externalBGM.play().then(function(){
-            document.addEventListener('click', function unmute(){
-              snd.externalBGM.muted = false;
-              snd.externalBGM.volume = ST.vol / 100 * 0.5;
-              snd.musicOn = true;
-              updMusicIcon(true);
-              document.removeEventListener('click', unmute);
-            }, {once: true});
-          }).catch(function(){});
+        }).catch(function(){
+          /* 浏览器阻止自动播放，等首次交互 */
+          snd.musicOn = false;
+          var bgmRetry = function(){
+            snd.musicOn = true;
+            snd.externalBGM.muted = false;
+            snd.externalBGM.volume = ST.vol / 100 * 0.5;
+            snd.externalBGM.play().then(function(){ updMusicIcon(true); }).catch(function(){});
+            document.removeEventListener('click', bgmRetry);
+          };
+          document.addEventListener('click', bgmRetry, {once: true});
         });
       }
     }catch(e){
@@ -1562,7 +1560,11 @@ document.addEventListener('DOMContentLoaded', function(){
   });
   document.addEventListener('visibilitychange', function(){
     if(document.hidden && snd.musicOn){
-      snd.externalBGM.pause();
+      if(snd.externalBGM) snd.externalBGM.pause();
+      snd.silence();
+    } else if(!document.hidden && snd.musicOn){
+      if(snd.externalBGM) snd.externalBGM.play().catch(function(){});
+      snd.applySnd(SCENES[ST.mbti] ? SCENES[ST.mbti].snd : {});
     }
   });
 
