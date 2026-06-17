@@ -1176,7 +1176,7 @@ function showLyric(){
   if(!sc || !sc.lyrics){ dom.lyrics.style.opacity = '0'; return; }
   dom.lyrics.textContent = sc.lyrics[lyricIdx];
   dom.lyrics.style.opacity = '1';
-  setTimeout(function(){ dom.lyrics.style.opacity = '0'; }, 4500);
+  setTimeout(function(){ dom.lyrics.style.opacity = '0'; }, 11000);
   lyricIdx = (lyricIdx + 1) % sc.lyrics.length;
 }
 function startLyrics(){
@@ -1185,7 +1185,7 @@ function startLyrics(){
   var sc = SCENES[ST.mbti];
   if(sc && sc.lyrics){
     showLyric();
-    lyricTimer = setInterval(showLyric, 5500);
+    lyricTimer = setInterval(showLyric, 13000);
   }
 }
 
