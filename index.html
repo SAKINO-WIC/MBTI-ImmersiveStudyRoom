@@ -867,7 +867,7 @@ AudioEngine.prototype.init = function(){
     this.masterGain.connect(this.ac.destination);
     this._makeNoiseBuffer();
     this._buildChannels();
-    this.loadExternalBGM('music/main-bgm/Yi Chou - Call of silence（钢琴版）.mp3');
+    this.loadExternalBGM('music/main-bgm/bgm.mp3');
     this.ok = true;
   }catch(e){ console.warn('Audio init failed:', e); }
 };
