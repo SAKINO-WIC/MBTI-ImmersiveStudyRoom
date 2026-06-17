@@ -554,22 +554,23 @@ var CATS={NT:{label:'分析师',sub:'理性 · 创新 · 深邃',color:'#8a9ed6'
 var CAT_ORDER=['NT','NF','SJ','SP'];
 var TYPE_ORDER={NT:['INTJ','INTP','ENTJ','ENTP'],NF:['INFJ','INFP','ENFJ','ENFP'],SJ:['ISTJ','ISFJ','ESTJ','ESFJ'],SP:['ISTP','ISFP','ESTP','ESFP']};
 var SCENES={
-INTJ:{name:'建筑师',scene:'星空天文台',cat:'NT',accent:'#8a9ed6',particle:'stars',bg:'radial-gradient(ellipse at 65% 15%,rgba(100,80,220,0.15),transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(40,60,180,0.1),transparent 45%),radial-gradient(ellipse at 80% 80%,rgba(60,40,120,0.08),transparent 40%),linear-gradient(180deg,#05081a,#080e28 30%,#0c1230 60%,#060a1a)',orb:['#6040c0','#3060b0'],snd:{rain:0,fire:0,wind:38,cafe:0,forest:0}},
-INTP:{name:'逻辑学家',scene:'赛博书房',cat:'NT',accent:'#5cc8d8',particle:'rain',bg:'radial-gradient(ellipse at 35% 55%,rgba(0,200,220,0.07),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(120,40,255,0.06),transparent 45%),linear-gradient(180deg,#08080f,#0a0c18 35%,#0e1022 65%,#080810)',orb:['#00b0c0','#6030c0'],snd:{rain:90,fire:0,wind:15,cafe:0,forest:0}},
-ENTJ:{name:'指挥官',scene:'云端总部',cat:'NT',accent:'#7a9fd4',particle:'stars',bg:'radial-gradient(ellipse at 50% 25%,rgba(100,140,220,0.12),transparent 55%),linear-gradient(180deg,#0a0e1a,#101828 40%,#1a2238 70%,#0c1020)',orb:['#5070b8','#3050a0'],snd:{rain:0,fire:0,wind:23,cafe:30,forest:0}},
-ENTP:{name:'辩论家',scene:'暴风灯塔',cat:'NT',accent:'#a8b8e0',particle:'sparkle',bg:'radial-gradient(ellipse at 50% 60%,rgba(180,160,100,0.06),transparent 40%),linear-gradient(180deg,#08080e,#0e1020 30%,#181830 60%,#0a0a18)',orb:['#b0a060','#6050a0'],snd:{rain:98,fire:0,wind:53,cafe:0,forest:0}},
-INFJ:{name:'提倡者',scene:'月光竹林',cat:'NF',accent:'#8ac4a0',particle:'fireflies',bg:'radial-gradient(ellipse at 65% 20%,rgba(200,220,240,0.06),transparent 50%),linear-gradient(180deg,#060e0a,#0a1a12 40%,#0e2018 70%,#080f0a)',orb:['#80d0a0','#408060'],snd:{rain:0,fire:0,wind:45,cafe:0,forest:38}},
-INFP:{name:'调停者',scene:'雨夜书店',cat:'NF',accent:'#d4a86e',particle:'rain',bg:'radial-gradient(ellipse at 50% 75%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1408 35%,#20180e 65%,#120e08)',orb:['#d0a060','#a07040'],snd:{rain:83,fire:23,wind:0,cafe:0,forest:0}},
-ENFJ:{name:'主人公',scene:'朝露花园',cat:'NF',accent:'#80c4a0',particle:'petal',bg:'radial-gradient(ellipse at 50% 35%,rgba(200,220,140,0.08),transparent 50%),linear-gradient(180deg,#101810,#0e1a0e 30%,#12200e 60%,#0a1208)',orb:['#60b080','#40a060'],snd:{rain:0,fire:0,wind:30,cafe:0,forest:53}},
-ENFP:{name:'竞选者',scene:'萤火溪谷',cat:'NF',accent:'#a8d86c',particle:'fireflies',bg:'radial-gradient(ellipse at 40% 50%,rgba(120,200,80,0.06),transparent 50%),linear-gradient(180deg,#060e06,#081408 35%,#0a1a0a 65%,#060c06)',orb:['#80c040','#60a030'],snd:{rain:0,fire:0,wind:18,cafe:0,forest:60}},
-ISTJ:{name:'物流师',scene:'古典图书馆',cat:'SJ',accent:'#c4a070',particle:'dust',bg:'radial-gradient(ellipse at 40% 30%,rgba(200,160,80,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1208 35%,#1e160e 65%,#100c06)',orb:['#c0a050','#907030'],snd:{rain:0,fire:0,wind:12,cafe:8,forest:0}},
-ISFJ:{name:'守卫者',scene:'壁炉暖屋',cat:'SJ',accent:'#d89850',particle:'embers',bg:'radial-gradient(ellipse at 50% 85%,rgba(220,140,50,0.14),transparent 50%),linear-gradient(180deg,#0a0806,#141008 35%,#1a1408 65%,#0e0a06)',orb:['#d08040','#a06030'],snd:{rain:0,fire:100,wind:12,cafe:0,forest:0}},
-ESTJ:{name:'总经理',scene:'清晨自习室',cat:'SJ',accent:'#b0a080',particle:'dust',bg:'radial-gradient(ellipse at 70% 15%,rgba(200,200,180,0.06),transparent 50%),linear-gradient(180deg,#0c0c0e,#121214 35%,#18181a 65%,#0e0e0e)',orb:['#a09870','#808060'],snd:{rain:0,fire:0,wind:15,cafe:23,forest:0}},
-ESFJ:{name:'执政官',scene:'暖阳咖啡屋',cat:'SJ',accent:'#d4a868',particle:'sparkle',bg:'radial-gradient(ellipse at 45% 65%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#181208 35%,#1c1610 65%,#100e08)',orb:['#d0a050','#c08840'],snd:{rain:0,fire:12,wind:12,cafe:83,forest:0}},
-ISTP:{name:'鉴赏家',scene:'深海舱室',cat:'SP',accent:'#5090b8',particle:'bubbles',bg:'radial-gradient(ellipse at 50% 35%,rgba(40,100,160,0.1),transparent 50%),linear-gradient(180deg,#04080e,#060e18 35%,#081220 65%,#040810)',orb:['#2070b0','#1050a0'],snd:{rain:0,fire:0,wind:12,cafe:0,forest:0}},
-ISFP:{name:'探险家',scene:'樱花画室',cat:'SP',accent:'#d890a8',particle:'petal',bg:'radial-gradient(ellipse at 55% 30%,rgba(220,140,180,0.08),transparent 50%),linear-gradient(180deg,#100a10,#1a1018 35%,#1e1420 65%,#120c12)',orb:['#d07090','#b050a0'],snd:{rain:0,fire:0,wind:27,cafe:0,forest:45}},
-ESTP:{name:'企业家',scene:'山顶营地',cat:'SP',accent:'#d87840',particle:'embers',bg:'radial-gradient(ellipse at 50% 90%,rgba(220,100,30,0.14),transparent 50%),linear-gradient(180deg,#0a0808,#12100e 35%,#1a140e 65%,#0e0c08)',orb:['#d06030','#b04020'],snd:{rain:0,fire:90,wind:38,cafe:0,forest:23}},
-ESFP:{name:'表演者',scene:'落日沙滩',cat:'SP',accent:'#e88850',particle:'sparkle',bg:'radial-gradient(ellipse at 50% 50%,rgba(240,120,50,0.1),transparent 50%),linear-gradient(180deg,#180a18,#2a1220 25%,#501a28 50%,#803820 72%,#201008)',orb:['#e07040','#d05060'],snd:{rain:0,fire:0,wind:33,cafe:0,forest:0}}
+INTJ:{name:'建筑师',scene:'星空天文台',cat:'NT',accent:'#8a9ed6',particle:'stars',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 65% 15%,rgba(100,80,220,0.15),transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(40,60,180,0.1),transparent 45%),radial-gradient(ellipse at 80% 80%,rgba(60,40,120,0.08),transparent 40%),linear-gradient(180deg,#05081a,#080e28 30%,#0c1230 60%,#060a1a)',orb:['#6040c0','#3060b0'],snd:{rain:0,fire:0,wind:38,cafe:0,forest:0}},
+INTP:{name:'逻辑学家',scene:'赛博书房',cat:'NT',accent:'#5cc8d8',particle:'rain',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 35% 55%,rgba(0,200,220,0.07),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(120,40,255,0.06),transparent 45%),linear-gradient(180deg,#08080f,#0a0c18 35%,#0e1022 65%,#080810)',orb:['#00b0c0','#6030c0'],snd:{rain:90,fire:0,wind:15,cafe:0,forest:0}},
+ENTJ:{name:'指挥官',scene:'云端总部',cat:'NT',accent:'#7a9fd4',particle:'stars',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 25%,rgba(100,140,220,0.12),transparent 55%),linear-gradient(180deg,#0a0e1a,#101828 40%,#1a2238 70%,#0c1020)',orb:['#5070b8','#3050a0'],snd:{rain:0,fire:0,wind:23,cafe:30,forest:0}},
+ENTP:{name:'辩论家',scene:'暴风灯塔',cat:'NT',accent:'#a8b8e0',particle:'sparkle',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 60%,rgba(180,160,100,0.06),transparent 40%),linear-gradient(180deg,#08080e,#0e1020 30%,#181830 60%,#0a0a18)',orb:['#b0a060','#6050a0'],snd:{rain:98,fire:0,wind:53,cafe:0,forest:0}},
+INFJ:{name:'提倡者',scene:'月光竹林',cat:'NF',accent:'#8ac4a0',particle:'fireflies',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 65% 20%,rgba(200,220,240,0.06),transparent 50%),linear-gradient(180deg,#060e0a,#0a1a12 40%,#0e2018 70%,#080f0a)',orb:['#80d0a0','#408060'],snd:{rain:0,fire:0,wind:45,cafe:0,forest:38}},
+INFP:{name:'调停者',scene:'雨夜书店',cat:'NF',accent:'#d4a86e',particle:'rain',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 75%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1408 35%,#20180e 65%,#120e08)',orb:['#d0a060','#a07040'],snd:{rain:83,fire:23,wind:0,cafe:0,forest:0}},
+ENFJ:{name:'主人公',scene:'朝露花园',cat:'NF',accent:'#80c4a0',particle:'petal',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 35%,rgba(200,220,140,0.08),transparent 50%),linear-gradient(180deg,#101810,#0e1a0e 30%,#12200e 60%,#0a1208)',orb:['#60b080','#40a060'],snd:{rain:0,fire:0,wind:30,cafe:0,forest:53}},
+ENFP:{name:'竞选者',scene:'萤火溪谷',cat:'NF',accent:'#a8d86c',particle:'fireflies',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 40% 50%,rgba(120,200,80,0.06),transparent 50%),linear-gradient(180deg,#060e06,#081408 35%,#0a1a0a 65%,#060c06)',orb:['#80c040','#60a030'],snd:{rain:0,fire:0,wind:18,cafe:0,forest:60}},
+ISTJ:{name:'物流师',scene:'古典图书馆',cat:'SJ',accent:'#c4a070',particle:'dust',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 40% 30%,rgba(200,160,80,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1208 35%,#1e160e 65%,#100c06)',orb:['#c0a050','#907030'],snd:{rain:0,fire:0,wind:12,cafe:8,forest:0}},
+ISFJ:{name:'守卫者',scene:'壁炉暖屋',cat:'SJ',accent:'#d89850',particle:'embers',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 85%,rgba(220,140,50,0.14),transparent 50%),linear-gradient(180deg,#0a0806,#141008 35%,#1a1408 65%,#0e0a06)',orb:['#d08040','#a06030'],snd:{rain:0,fire:100,wind:12,cafe:0,forest:0}},
+ESTJ:{name:'总经理',scene:'清晨自习室',cat:'SJ',accent:'#b0a080',particle:'dust',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 70% 15%,rgba(200,200,180,0.06),transparent 50%),linear-gradient(180deg,#0c0c0e,#121214 35%,#18181a 65%,#0e0e0e)',orb:['#a09870','#808060'],snd:{rain:0,fire:0,wind:15,cafe:23,forest:0}},
+ESFJ:{name:'执政官',scene:'暖阳咖啡屋',cat:'SJ',accent:'#d4a868',particle:'sparkle',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 45% 65%,rgba(220,180,100,0.1),transparent 50%),linear-gradient(180deg,#0e0a06,#181208 35%,#1c1610 65%,#100e08)',orb:['#d0a050','#c08840'],snd:{rain:0,fire:12,wind:12,cafe:83,forest:0}},
+ISTP:{name:'鉴赏家',scene:'深海舱室',cat:'SP',accent:'#5090b8',particle:'bubbles',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 35%,rgba(40,100,160,0.1),transparent 50%),linear-gradient(180deg,#04080e,#060e18 35%,#081220 65%,#040810)',orb:['#2070b0','#1050a0'],snd:{rain:0,fire:0,wind:12,cafe:0,forest:0}},
+ISFP:{name:'探险家',scene:'樱花画室',cat:'SP',accent:'#d890a8',particle:'petal',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 55% 30%,rgba(220,140,180,0.08),transparent 50%),linear-gradient(180deg,#100a10,#1a1018 35%,#1e1420 65%,#120c12)',orb:['#d07090','#b050a0'],snd:{rain:0,fire:0,wind:27,cafe:0,forest:45}},
+ESTP:{name:'企业家',scene:'山顶营地',cat:'SP',accent:'#d87840',particle:'embers',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 90%,rgba(220,100,30,0.14),transparent 50%),linear-gradient(180deg,#0a0808,#12100e 35%,#1a140e 65%,#0e0c08)',orb:['#d06030','#b04020'],snd:{rain:0,fire:90,wind:38,cafe:0,forest:23}},
+ESFP:{name:'表演者',scene:'落日沙滩',cat:'SP',accent:'#e88850',particle:'sparkle',bgm:'music/main-bgm/bgm.mp3',bg:'radial-gradient(ellipse at 50% 50%,rgba(240,120,50,0.1),transparent 50%),linear-gradient(180deg,#180a18,#2a1220 25%,#501a28 50%,#803820 72%,#201008)',orb:['#e07040','#d05060'],snd:{rain:0,fire:0,wind:33,cafe:0,forest:0}},
+ALASKA:{name:'海湾旅人',scene:'阿拉斯加海湾',cat:'SP',accent:'#6ba3d6',particle:'stars',bgm:'music/main-bgm/GulfofAlaska.mp3',bg:'radial-gradient(ellipse at 50% 60%,rgba(60,120,180,0.12),transparent 50%),radial-gradient(ellipse at 30% 30%,rgba(80,160,220,0.06),transparent 40%),linear-gradient(180deg,#020810,#0a1628 30%,#0e2040 60%,#061020)',orb:['#4080c0','#2060a0'],snd:{rain:0,fire:0,wind:40,cafe:0,forest:0}}
 };
 var ACHS=[{id:'first',icon:'🍅',name:'第一颗番茄',desc:'完成第一个番茄钟'},{id:'ten',icon:'🌱',name:'初心者',desc:'累计完成10个'},{id:'fifty',icon:'🔥',name:'专注达人',desc:'累计完成50个'},{id:'hundred',icon:'👑',name:'番茄大师',desc:'累计完成100个'},{id:'streak3',icon:'⭐',name:'坚持不懈',desc:'连续3天达标'},{id:'streak7',icon:'🌟',name:'习惯养成',desc:'连续7天达标'},{id:'goal',icon:'🎯',name:'今日达标',desc:'完成今日目标'}];
 var QUOTES=['"学而不思则罔，思而不学则殆。" — 孔子','"千里之行，始于足下。" — 老子','"不积跬步，无以至千里。" — 荀子','"业精于勤，荒于嬉。" — 韩愈','"静以修身，俭以养德。" — 诸葛亮','"天道酬勤，功不唐捐。"','"吾生也有涯，而知也无涯。" — 庄子'];
@@ -1021,6 +1022,17 @@ AudioEngine.prototype.stopExternalBGM = function(){
     this.externalBGM.pause();
   }
 };
+AudioEngine.prototype.changeBGM = function(url){
+  if(!this.externalBGM || this.externalBGM.src.indexOf(url) !== -1) return;
+  var wasPlaying = this.musicOn;
+  this.stopExternalBGM();
+  this.loadExternalBGM(url);
+  if(wasPlaying && this.externalBGM){
+    this.musicOn = true;
+    this.externalBGM.volume = ST.vol / 100 * 0.5;
+    this.externalBGM.play().catch(function(){});
+  }
+};
 AudioEngine.prototype.stopMusic = function(){
   this.musicOn = false;
   this.stopExternalBGM();
@@ -1133,7 +1145,7 @@ function updateAmbientOrbs(){
   dom.orb1.style.opacity=(0.08+progress*0.06).toFixed(3);
   dom.orb2.style.opacity=(0.05+progress*0.06).toFixed(3);
 }
-function loadScene(tp){var sc=SCENES[tp];if(!sc)return;dom.sceneBg.style.background=sc.bg;document.documentElement.style.setProperty('--accent',sc.accent);var rgb=hexRGB(sc.accent);document.documentElement.style.setProperty('--glow','rgba('+rgb.join(',')+',.25)');dom.bType.textContent=tp;dom.bScene.textContent=sc.scene;dom.orb1.style.cssText='background:'+sc.orb[0]+';width:380px;height:380px;left:12%;top:22%;opacity:.12';dom.orb2.style.cssText='background:'+sc.orb[1]+';width:300px;height:300px;left:68%;top:58%;opacity:.09';dom.orb3.style.cssText='background:'+sc.orb[0]+';width:220px;height:220px;right:15%;bottom:20%;opacity:0';fx.set(sc.particle);snd.init();snd.setMood(sc.cat);snd.applySnd(sc.snd);document.querySelectorAll('.mx-sl').forEach(function(sl){var ch=sl.getAttribute('data-ch');if(ch in sc.snd)sl.value=sc.snd[ch];else if(ch==='master')sl.value=ST.vol});updDurBtns();showQuote();applyTimeTint();setInterval(applyTimeTint,300000);LifeSystem.applyGrowth()}
+function loadScene(tp){var sc=SCENES[tp];if(!sc)return;dom.sceneBg.style.background=sc.bg;document.documentElement.style.setProperty('--accent',sc.accent);var rgb=hexRGB(sc.accent);document.documentElement.style.setProperty('--glow','rgba('+rgb.join(',')+',.25)');dom.bType.textContent=tp;dom.bScene.textContent=sc.scene;dom.orb1.style.cssText='background:'+sc.orb[0]+';width:380px;height:380px;left:12%;top:22%;opacity:.12';dom.orb2.style.cssText='background:'+sc.orb[1]+';width:300px;height:300px;left:68%;top:58%;opacity:.09';dom.orb3.style.cssText='background:'+sc.orb[0]+';width:220px;height:220px;right:15%;bottom:20%;opacity:0';fx.set(sc.particle);snd.init();snd.setMood(sc.cat);snd.applySnd(sc.snd);if(sc.bgm)snd.changeBGM(sc.bgm);document.querySelectorAll('.mx-sl').forEach(function(sl){var ch=sl.getAttribute('data-ch');if(ch in sc.snd)sl.value=sc.snd[ch];else if(ch==='master')sl.value=ST.vol});updDurBtns();showQuote();applyTimeTint();setInterval(applyTimeTint,300000);LifeSystem.applyGrowth()}
 function selectMBTI(tp){if(ST.transitioning)return;ST.transitioning=true;ST.mbti=tp;saveState();dom.selection.classList.add('hidden');loadScene(tp);fx.start();setTimeout(function(){dom.studyUI.classList.add('show');ST.transitioning=false},450)}
 function switchMBTI(){if(ST.transitioning)return;ST.transitioning=true;closePanel();stopTimer();if(ST.focus){ST.focus=false;document.body.classList.remove('focus');dom.focusHint.classList.remove('active')}if(ST.eyeRestActive){dom.eyeRest.classList.remove('show');ST.eyeRestActive=false}dom.completeNotif.classList.remove('show');dom.studyUI.classList.remove('show');setTimeout(function(){dom.selection.classList.remove('hidden');dom.selection.scrollTop=0;ST.transitioning=false},450)}
 function toggleTimer(){if(ST.timer.running){stopTimer();return}ST.timer.running=true;dom.btnGo.textContent='⏸';dom.tWrap.classList.add('running');ST.eyeCounter=1200;ST.timer.iv=setInterval(function(){if(ST.timer.remain<=0){stopTimer();if(ST.timer.mode==='focus')showCompletion();else snd.bell();return}ST.timer.remain--;updTimerDisplay();updateAmbientOrbs();if(ST.eyeRest&&ST.timer.mode==='focus'){ST.eyeCounter--;if(ST.eyeCounter<=0){showEyeRest();ST.eyeCounter=1200}dom.eyeLabel.textContent=Math.ceil(ST.eyeCounter/60)+'m'}},1000)}
@@ -1204,7 +1216,8 @@ document.addEventListener('DOMContentLoaded', function(){
     bgmStarted = true;
     if(!ST.bgmOn) return;
     try{
-      snd.loadExternalBGM('music/main-bgm/bgm.mp3');
+      var sceneBgm = (SCENES[ST.mbti] && SCENES[ST.mbti].bgm) || 'music/main-bgm/bgm.mp3';
+      snd.loadExternalBGM(sceneBgm);
       if(snd.externalBGM){
         snd.musicOn = true;
         snd.externalBGM.muted = false;
@@ -1592,7 +1605,7 @@ document.addEventListener('DOMContentLoaded', function(){
       _alaskaClicks++;
       clearTimeout(_alaskaTimer);
       _alaskaTimer=setTimeout(function(){_alaskaClicks=0},1500);
-      if(_alaskaClicks>=5){_alaskaClicks=0;window.location.href='alaska.html'}
+      if(_alaskaClicks>=5){_alaskaClicks=0;selectMBTI('ALASKA')}
     });
   }
 });
