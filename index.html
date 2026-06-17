@@ -838,9 +838,9 @@ var IdleDetector={
     }
   }
 };
-var ST={mbti:null,timer:{mode:'focus',total:1500,remain:1500,running:false,iv:null,sessions:0},todos:[],journal:[],achievements:[],vol:60,focusMin:25,dailyGoal:4,focus:false,eyeRest:true,history:{},theme:'dark',transitioning:false,lastQI:-1,eyeCounter:1200,eyeRestActive:false,currentPanel:null,focusHintTimer:null};
-function loadState(){try{var v=JSON.parse(localStorage.getItem('mbti_room_v10'));if(v){if(v.mbti&&SCENES[v.mbti])ST.mbti=v.mbti;ST.timer.sessions=v.sessions||0;ST.todos=v.todos||[];ST.journal=v.journal||[];ST.achievements=v.ach||[];if(v.vol!=null)ST.vol=v.vol;if(v.fm)ST.focusMin=v.fm;if(v.dg)ST.dailyGoal=v.dg;ST.history=v.history||{};if(v.eyeRest===false)ST.eyeRest=false;if(v.theme)ST.theme=v.theme;}}catch(e){}}
-function saveState(){try{var data={mbti:ST.mbti,sessions:ST.timer.sessions,todos:ST.todos,journal:ST.journal,ach:ST.achievements,vol:ST.vol,fm:ST.focusMin,dg:ST.dailyGoal,history:ST.history,eyeRest:ST.eyeRest,theme:ST.theme};localStorage.setItem('mbti_room_v10',JSON.stringify(data));DB.saveState(data);}catch(e){}}
+var ST={mbti:null,timer:{mode:'focus',total:1500,remain:1500,running:false,iv:null,sessions:0},todos:[],journal:[],achievements:[],vol:60,focusMin:25,dailyGoal:4,focus:false,eyeRest:true,history:{},theme:'dark',transitioning:false,lastQI:-1,eyeCounter:1200,eyeRestActive:false,currentPanel:null,focusHintTimer:null,bgmOn:true};
+function loadState(){try{var v=JSON.parse(localStorage.getItem('mbti_room_v10'));if(v){if(v.mbti&&SCENES[v.mbti])ST.mbti=v.mbti;ST.timer.sessions=v.sessions||0;ST.todos=v.todos||[];ST.journal=v.journal||[];ST.achievements=v.ach||[];if(v.vol!=null)ST.vol=v.vol;if(v.fm)ST.focusMin=v.fm;if(v.dg)ST.dailyGoal=v.dg;ST.history=v.history||{};if(v.eyeRest===false)ST.eyeRest=false;if(v.theme)ST.theme=v.theme;if(v.bgmOn===false)ST.bgmOn=false;}}catch(e){}}
+function saveState(){try{var data={mbti:ST.mbti,sessions:ST.timer.sessions,todos:ST.todos,journal:ST.journal,ach:ST.achievements,vol:ST.vol,fm:ST.focusMin,dg:ST.dailyGoal,history:ST.history,eyeRest:ST.eyeRest,theme:ST.theme,bgmOn:ST.bgmOn};localStorage.setItem('mbti_room_v10',JSON.stringify(data));DB.saveState(data);}catch(e){}}
 DB.open(function(){loadState()});
 
 /* ════════════════════════════════════
@@ -1204,6 +1204,7 @@ document.addEventListener('DOMContentLoaded', function(){
   function startBGM(){
     if(bgmStarted) return;
     bgmStarted = true;
+    if(!ST.bgmOn) return;
     try{
       snd.init();
       if(snd.ok && snd.externalBGM){
@@ -1346,10 +1347,12 @@ document.addEventListener('DOMContentLoaded', function(){
     snd.init();
     if(snd.ac && snd.ac.state==='suspended'){
       var el = this;
-      snd.ac.resume().then(function(){ el.classList.toggle('on', snd.toggleMusic()); });
+      snd.ac.resume().then(function(){ el.classList.toggle('on', snd.toggleMusic()); ST.bgmOn = snd.musicOn; saveState(); });
       return;
     }
     this.classList.toggle('on', snd.toggleMusic());
+    ST.bgmOn = snd.musicOn;
+    saveState();
   });
 
   /* ── 护眼 ── */
