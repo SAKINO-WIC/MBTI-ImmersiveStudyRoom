@@ -1027,9 +1027,7 @@ AudioEngine.prototype.changeBGM = function(url){
   if(!this.externalBGM || this.externalBGM.src.indexOf(url) !== -1) return;
   var wasPlaying = this.musicOn;
   this.stopExternalBGM();
-  var old = this.externalBGM;
   this.loadExternalBGM(url);
-  if(old){ try{old.pause();old.src='';}catch(e){} }
   if(wasPlaying && this.externalBGM){
     this.musicOn = true;
     this.externalBGM.volume = ST.vol / 100 * 0.5;
