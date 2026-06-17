@@ -1542,6 +1542,17 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   });
 
+  /* ── 页面关闭/隐藏时强制停止所有音频 ── */
+  window.addEventListener('beforeunload', function(){
+    snd.stopMusic();
+    snd.silence();
+  });
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden && snd.musicOn){
+      snd.externalBGM.pause();
+    }
+  });
+
   /* ── 视差 ── */
   document.addEventListener('mousemove', function(e){
     if(ST.mbti && SCENES[ST.mbti]){
