@@ -418,7 +418,7 @@ body.idle #studyUI{opacity:0.7;transition:opacity 2s ease}
           <div class="mx-row"><span class="mx-lbl">🌿 森林</span><input type="range" class="mx-sl" data-ch="forest" min="0" max="100" value="0"></div>
         </div>
       </div>
-      <button class="ibtn" id="btnMusic" title="背景音乐"><span class="ib-icon">♪</span><span class="ib-label">音乐</span></button>
+      <button class="ibtn" id="btnMusic" title="背景音乐"><span class="ib-icon" id="btnMusicIcon">▶</span><span class="ib-label" id="btnMusicLabel">音乐</span></button>
       <button class="ibtn" id="btnEye" title="护眼提醒"><span class="ib-icon">👁</span><span class="ib-label" id="eyeLabel">护眼</span></button>
       <button class="ibtn" id="btnFocus" title="专注模式"><span class="ib-icon">⊙</span><span class="ib-label">专注</span></button>
       <button class="ibtn ibtn-switch" id="btnSwitch" title="切换场景"><span class="ib-icon">⟲</span><span class="ib-label">切换</span></button>
@@ -1137,7 +1137,7 @@ function updateAmbientOrbs(){
 }
 function loadScene(tp){var sc=SCENES[tp];if(!sc)return;dom.sceneBg.style.background=sc.bg;document.documentElement.style.setProperty('--accent',sc.accent);var rgb=hexRGB(sc.accent);document.documentElement.style.setProperty('--glow','rgba('+rgb.join(',')+',.25)');dom.bType.textContent=tp;dom.bScene.textContent=sc.scene;dom.orb1.style.cssText='background:'+sc.orb[0]+';width:380px;height:380px;left:12%;top:22%;opacity:.12';dom.orb2.style.cssText='background:'+sc.orb[1]+';width:300px;height:300px;left:68%;top:58%;opacity:.09';dom.orb3.style.cssText='background:'+sc.orb[0]+';width:220px;height:220px;right:15%;bottom:20%;opacity:0';fx.set(sc.particle);snd.init();snd.setMood(sc.cat);snd.applySnd(sc.snd);document.querySelectorAll('.mx-sl').forEach(function(sl){var ch=sl.getAttribute('data-ch');if(ch in sc.snd)sl.value=sc.snd[ch];else if(ch==='master')sl.value=ST.vol});updDurBtns();showQuote();applyTimeTint();setInterval(applyTimeTint,300000);LifeSystem.applyGrowth()}
 function selectMBTI(tp){if(ST.transitioning)return;ST.transitioning=true;ST.mbti=tp;saveState();dom.selection.classList.add('hidden');loadScene(tp);fx.start();setTimeout(function(){dom.studyUI.classList.add('show');ST.transitioning=false},450)}
-function switchMBTI(){if(ST.transitioning)return;ST.transitioning=true;closePanel();stopTimer();if(ST.focus){ST.focus=false;document.body.classList.remove('focus');dom.focusHint.classList.remove('active')}if(ST.eyeRestActive){dom.eyeRest.classList.remove('show');ST.eyeRestActive=false}dom.completeNotif.classList.remove('show');snd.silence();snd.stopMusic();dom.btnMusic.classList.remove('on');dom.studyUI.classList.remove('show');setTimeout(function(){dom.selection.classList.remove('hidden');dom.selection.scrollTop=0;ST.transitioning=false},450)}
+function switchMBTI(){if(ST.transitioning)return;ST.transitioning=true;closePanel();stopTimer();if(ST.focus){ST.focus=false;document.body.classList.remove('focus');dom.focusHint.classList.remove('active')}if(ST.eyeRestActive){dom.eyeRest.classList.remove('show');ST.eyeRestActive=false}dom.completeNotif.classList.remove('show');snd.silence();snd.stopMusic();dom.btnMusic.classList.remove('on');dom.btnMusicIcon.textContent='▶';dom.studyUI.classList.remove('show');setTimeout(function(){dom.selection.classList.remove('hidden');dom.selection.scrollTop=0;ST.transitioning=false},450)}
 function toggleTimer(){if(ST.timer.running){stopTimer();return}ST.timer.running=true;dom.btnGo.textContent='⏸';dom.tWrap.classList.add('running');ST.eyeCounter=1200;ST.timer.iv=setInterval(function(){if(ST.timer.remain<=0){stopTimer();if(ST.timer.mode==='focus')showCompletion();else snd.bell();return}ST.timer.remain--;updTimerDisplay();updateAmbientOrbs();if(ST.eyeRest&&ST.timer.mode==='focus'){ST.eyeCounter--;if(ST.eyeCounter<=0){showEyeRest();ST.eyeCounter=1200}dom.eyeLabel.textContent=Math.ceil(ST.eyeCounter/60)+'m'}},1000)}
 function stopTimer(){clearInterval(ST.timer.iv);ST.timer.running=false;dom.btnGo.textContent='▶';dom.tWrap.classList.remove('running');dom.eyeLabel.textContent='护眼'}
 function resetTimer(){stopTimer();var d={focus:getFocusTotal(),short:300,long:900};ST.timer.total=d[ST.timer.mode];ST.timer.remain=ST.timer.total;ST.eyeCounter=1200;updTimerDisplay();dom.eyeLabel.textContent='护眼'}
@@ -1163,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function(){
   dom.quote = $('quote'); dom.sDone = $('sDone'); dom.dgNum = $('dgNum'); dom.dgFill = $('dgFill');
   dom.weekTrack = $('weekTrack');
   dom.volSlider = $('volSlider'); dom.volIcon = $('volIcon'); dom.mixerPop = $('mixerPop');
-  dom.btnMusic = $('btnMusic'); dom.btnEye = $('btnEye'); dom.btnFocus = $('btnFocus'); dom.btnSwitch = $('btnSwitch'); dom.btnExit = $('btnExit');
+  dom.btnMusic = $('btnMusic'); dom.btnMusicIcon = $('btnMusicIcon'); dom.btnMusicLabel = $('btnMusicLabel'); dom.btnEye = $('btnEye'); dom.btnFocus = $('btnFocus'); dom.btnSwitch = $('btnSwitch'); dom.btnExit = $('btnExit');
   dom.exitOverlay = $('exitOverlay'); dom.exitSessions = $('exitSessions'); dom.exitMinutes = $('exitMinutes'); dom.exitAchievements = $('exitAchievements'); dom.exitAchievementsList = $('exitAchievementsList'); dom.exitMessage = $('exitMessage');
   dom.btnExportReport = $('btnExportReport'); dom.btnStay = $('btnStay'); dom.btnConfirmExit = $('btnConfirmExit'); dom.exitClearData = $('exitClearData');
   dom.eyeLabel = $('eyeLabel');
@@ -1212,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', function(){
         snd.externalBGM.muted = false;
         snd.externalBGM.volume = ST.vol / 100 * 0.5;
         snd.externalBGM.play().then(function(){
-          dom.btnMusic.classList.add('on');
+          updMusicIcon(true);
         }).catch(function(e){
           console.log('BGM autoplay blocked, muted fallback');
           snd.externalBGM.muted = true;
@@ -1221,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', function(){
               snd.externalBGM.muted = false;
               snd.externalBGM.volume = ST.vol / 100 * 0.5;
               snd.musicOn = true;
-              dom.btnMusic.classList.add('on');
+              updMusicIcon(true);
               document.removeEventListener('click', unmute);
             }, {once: true});
           }).catch(function(){});
@@ -1346,13 +1346,14 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
   /* ── 音乐总开关（BGM + 音效） ── */
+  function updMusicIcon(on){ dom.btnMusicIcon.textContent = on ? '⏸' : '▶'; dom.btnMusic.classList.toggle('on', on); }
   dom.btnMusic.addEventListener('click', function(){
     snd.init();
     if(snd.ac && snd.ac.state==='suspended'){
       var el = this;
       snd.ac.resume().then(function(){
         snd.musicOn = !snd.musicOn;
-        el.classList.toggle('on', snd.musicOn);
+        updMusicIcon(snd.musicOn);
         if(snd.musicOn){ snd.playExternalBGM(); snd.applySnd(SCENES[ST.mbti] ? SCENES[ST.mbti].snd : {}); }
         else { snd.stopExternalBGM(); snd.silence(); }
         ST.bgmOn = snd.musicOn; saveState();
@@ -1360,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', function(){
       return;
     }
     snd.musicOn = !snd.musicOn;
-    this.classList.toggle('on', snd.musicOn);
+    updMusicIcon(snd.musicOn);
     if(snd.musicOn){ snd.playExternalBGM(); snd.applySnd(SCENES[ST.mbti] ? SCENES[ST.mbti].snd : {}); }
     else { snd.stopExternalBGM(); snd.silence(); }
     ST.bgmOn = snd.musicOn;
@@ -1491,7 +1492,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     dom.exitOverlay.classList.remove('show');
     snd.silence();snd.stopMusic();
-    if(dom.btnMusic.classList.contains('on'))dom.btnMusic.classList.remove('on');
+    if(dom.btnMusic.classList.contains('on')){ dom.btnMusic.classList.remove('on'); dom.btnMusicIcon.textContent = '▶'; }
     dom.studyUI.classList.remove('show');
     dom.selection.classList.remove('hidden');
     dom.selection.scrollTop=0;
