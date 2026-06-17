@@ -65,11 +65,11 @@ body::after{content:'';position:fixed;inset:0;z-index:2;pointer-events:none;opac
 .sel-head{text-align:center;margin-bottom:40px}
 .sel-head h1{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,5vw,44px);font-weight:300;letter-spacing:4px;margin-bottom:14px;background:linear-gradient(135deg,var(--t1),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sel-head p{font-size:13px;color:var(--t2);letter-spacing:1.5px;max-width:420px;line-height:2;margin:0 auto}
-.sel-cats{display:flex;flex-direction:column;gap:32px;width:100%;max-width:900px}
+.sel-cats{display:flex;flex-direction:column;gap:6px;width:100%;max-width:900px}
 .sel-cat{opacity:0;transform:translateY(20px);animation:selIn .6s var(--ease) forwards}
 .sel-cat:nth-child(2){animation-delay:.12s}.sel-cat:nth-child(3){animation-delay:.24s}.sel-cat:nth-child(4){animation-delay:.36s}
 @keyframes selIn{to{opacity:1;transform:translateY(0)}}
-.cat-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-left:4px}
+.cat-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;padding-left:4px}
 .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .cat-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;letter-spacing:2px}
 .cat-tag{font-size:12px;color:var(--t3);letter-spacing:1px}
@@ -1166,6 +1166,27 @@ function showFocusHint(){dom.focusHint.classList.add('active');clearTimeout(ST.f
 /* ═══════════════════════════════════════════
    启动入口 — 所有事件在此注册
    ═══════════════════════════════════════════ */
+/* ── 歌词轮播（ALASKA 场景） ── */
+var lyricIdx = 0, lyricTimer = null;
+function showLyric(){
+  if(!dom.lyrics) return;
+  var sc = SCENES[ST.mbti];
+  if(!sc || !sc.lyrics){ dom.lyrics.style.opacity = '0'; return; }
+  dom.lyrics.textContent = sc.lyrics[lyricIdx];
+  dom.lyrics.style.opacity = '1';
+  setTimeout(function(){ dom.lyrics.style.opacity = '0'; }, 4500);
+  lyricIdx = (lyricIdx + 1) % sc.lyrics.length;
+}
+function startLyrics(){
+  clearInterval(lyricTimer);
+  lyricIdx = 0;
+  var sc = SCENES[ST.mbti];
+  if(sc && sc.lyrics){
+    showLyric();
+    lyricTimer = setInterval(showLyric, 5500);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function(){
   /* DOM 缓存 */
   dom.clock = $('clock'); dom.date = $('date');
@@ -1251,26 +1272,6 @@ document.addEventListener('DOMContentLoaded', function(){
   setInterval(updClock, 10000);
   setInterval(showQuote, 25000);
 
-  /* ── 歌词轮播（ALASKA 场景） ── */
-  var lyricIdx = 0, lyricTimer = null;
-  function showLyric(){
-    if(!dom.lyrics) return;
-    var sc = SCENES[ST.mbti];
-    if(!sc || !sc.lyrics){ dom.lyrics.style.opacity = '0'; return; }
-    dom.lyrics.textContent = sc.lyrics[lyricIdx];
-    dom.lyrics.style.opacity = '1';
-    setTimeout(function(){ dom.lyrics.style.opacity = '0'; }, 4500);
-    lyricIdx = (lyricIdx + 1) % sc.lyrics.length;
-  }
-  function startLyrics(){
-    clearInterval(lyricTimer);
-    lyricIdx = 0;
-    var sc = SCENES[ST.mbti];
-    if(sc && sc.lyrics){
-      showLyric();
-      lyricTimer = setInterval(showLyric, 5500);
-    }
-  }
 
   /* ── 计时器按钮 ── */
   dom.btnGo.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); toggleTimer(); });
