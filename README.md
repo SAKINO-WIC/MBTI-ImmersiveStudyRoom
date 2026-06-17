@@ -26,7 +26,7 @@
 
 ## 在线体验
 
-🔗 [github page 部署地址][(https://sakino-wic.github.io/MBTI-ImmersiveStudyRoom/)]
+🔗 [github page 部署地址](https://sakino-wic.github.io/MBTI-ImmersiveStudyRoom/)
 
 ## 产品设计文档
 
