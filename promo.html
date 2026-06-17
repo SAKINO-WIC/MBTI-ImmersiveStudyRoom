@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MBTI 沉浸自习室 - 宣传海报</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Serif+SC:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080808;color:#f0ece4;font-family:'Noto Serif SC',serif;display:flex;flex-direction:column;align-items:center;gap:40px;padding:40px 20px;min-height:100vh}
+
+/* ── 海报容器 ── */
+.poster{
+  width:400px;height:711px;position:relative;overflow:hidden;
+  border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);
+  flex-shrink:0;
+}
+
+/* ── 场景切换动画 ── */
+.poster-bg{
+  position:absolute;inset:0;transition:opacity 1.2s ease;
+  opacity:0;
+}
+.poster-bg.active{opacity:1}
+.poster-bg:nth-child(1){background:radial-gradient(ellipse at 65% 15%,rgba(100,80,220,.15),transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(40,60,180,.1),transparent 45%),linear-gradient(180deg,#05081a,#080e28 30%,#0c1230 60%,#060a1a)}
+.poster-bg:nth-child(2){background:radial-gradient(ellipse at 50% 75%,rgba(220,180,100,.1),transparent 50%),linear-gradient(180deg,#0e0a06,#1a1408 35%,#20180e 65%,#120e08)}
+.poster-bg:nth-child(3){background:radial-gradient(ellipse at 40% 50%,rgba(120,200,80,.06),transparent 50%),linear-gradient(180deg,#060e06,#081408 35%,#0a1a0a 65%,#060c06)}
+
+/* ── 粒子层 ── */
+.poster canvas{position:absolute;inset:0;pointer-events:none}
+
+/* ── 暗角 ── */
+.poster::after{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,.5));
+}
+
+/* ── 内容层 ── */
+.poster-content{
+  position:absolute;inset:0;z-index:3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 30px;
+}
+
+/* ── 顶部标签 ── */
+.tag{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;border-radius:24px;
+  background:rgba(12,12,18,.55);border:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(20px);margin-bottom:auto;margin-top:40px;
+}
+.tag-dot{width:7px;height:7px;border-radius:50%;background:var(--accent,#e8c547);box-shadow:0 0 10px var(--glow,rgba(232,197,71,.25))}
+.tag-type{font-family:'DM Mono',monospace;font-size:14px;letter-spacing:2px;font-weight:500}
+.tag-scene{font-size:12px;color:rgba(240,236,228,.5);letter-spacing:1px}
+
+/* ── 中心标题 ── */
+.poster-center{text-align:center}
+.timer-ring{
+  width:180px;height:180px;margin:0 auto 24px;
+  border-radius:50%;border:2px solid var(--accent,#e8c547);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px var(--glow,rgba(232,197,71,.25)),inset 0 0 30px rgba(0,0,0,.3);
+  animation:ringPulse 3s ease infinite;
+}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 40px var(--glow,rgba(232,197,71,.25)),inset 0 0 30px rgba(0,0,0,.3)}50%{box-shadow:0 0 60px var(--glow,rgba(232,197,71,.35)),inset 0 0 30px rgba(0,0,0,.3)}}
+.timer-num{font-family:'DM Mono',monospace;font-size:48px;font-weight:300;letter-spacing:3px}
+
+.title-zh{
+  font-size:36px;font-weight:300;letter-spacing:8px;
+  margin-bottom:12px;
+  background:linear-gradient(135deg,#f0ece4,var(--accent,#e8c547));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.title-en{
+  font-family:'Cormorant Garamond',serif;font-size:14px;
+  letter-spacing:4px;color:rgba(240,236,228,.4);margin-bottom:20px;
+}
+.subtitle{font-size:13px;color:rgba(240,236,228,.5);line-height:2;letter-spacing:1px}
+
+/* ── 底部信息 ── */
+.poster-bottom{margin-top:auto;text-align:center;padding-bottom:30px}
+.type-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.type-pill{
+  padding:4px 12px;border-radius:12px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;
+  transition:all .3s;
+}
+.features{display:flex;gap:16px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.feat{font-size:11px;color:rgba(240,236,228,.4);display:flex;align-items:center;gap:4px}
+.feat-dot{width:4px;height:4px;border-radius:50%;background:var(--accent,#e8c547)}
+.url{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:rgba(240,236,228,.35);letter-spacing:1px;
+  padding:8px 16px;border-radius:8px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+  display:inline-block;
+}
+
+/* ── 分隔线 ── */
+.divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);margin:20px auto}
+
+/* ── 场景指示器 ── */
+.dots{display:flex;gap:6px;justify-content:center;margin-bottom:auto;padding-bottom:20px}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .4s}
+.dot.active{background:var(--accent,#e8c547);box-shadow:0 0 8px var(--glow,rgba(232,197,71,.4))}
+
+/* ── 动态主题色 ── */
+.poster[data-theme="INTJ"]{--accent:#8a9ed6;--glow:rgba(138,158,214,.25)}
+.poster[data-theme="INFP"]{--accent:#d4a86e;--glow:rgba(212,168,110,.25)}
+.poster[data-theme="ENFP"]{--accent:#a8d86c;--glow:rgba(168,216,108,.25)}
+
+/* ── 抖音竖版尺寸 ── */
+.poster.douyin{width:360px;height:640px}
+.poster.douyin .title-zh{font-size:28px;letter-spacing:6px}
+.poster.douyin .timer-ring{width:140px;height:140px}
+.poster.douyin .timer-num{font-size:36px}
+
+/* ── 横版封面 ── */
+.poster.landscape{width:640px;height:360px;flex-direction:row}
+.poster.landscape .poster-content{flex-direction:row;justify-content:flex-start;padding:40px}
+.poster.landscape .poster-center{flex:1}
+.poster.landscape .timer-ring{width:120px;height:120px;margin-bottom:16px}
+.poster.landscape .timer-num{font-size:28px}
+.poster.landscape .title-zh{font-size:24px;letter-spacing:4px}
+.poster.landscape .poster-bottom{position:absolute;right:40px;top:50%;transform:translateY(-50%)}
+.poster.landscape .type-row{flex-direction:column;align-items:flex-end}
+
+h3{color:rgba(240,236,228,.3);font-size:14px;font-weight:300;letter-spacing:3px}
+</style>
+</head>
+<body>
+
+<h3>— 宣传素材 —</h3>
+
+<!-- ══════ 竖版抖音海报 ══════ -->
+<div class="poster douyin" id="posterDY" data-theme="INFP">
+  <div class="poster-bg active"></div>
+  <div class="poster-bg"></div>
+  <div class="poster-bg"></div>
+  <canvas id="particleDY" width="360" height="640"></canvas>
+
+  <div class="poster-content">
+    <div class="tag">
+      <span class="tag-dot"></span>
+      <span class="tag-type" id="pType">INFP</span>
+      <span class="tag-scene" id="pScene">雨夜书店</span>
+    </div>
+
+    <div class="poster-center">
+      <div class="timer-ring">
+        <span class="timer-num">25:00</span>
+      </div>
+      <div class="title-zh">沉浸自习室</div>
+      <div class="title-en">IMMERSIVE STUDY ROOM</div>
+      <div class="divider"></div>
+      <div class="subtitle">你的 MBTI 人格<br>决定你的学习氛围</div>
+    </div>
+
+    <div class="poster-bottom">
+      <div class="type-row">
+        <span class="type-pill">INTJ 星空</span>
+        <span class="type-pill">INFP 雨夜</span>
+        <span class="type-pill">ENFP 萤火</span>
+        <span class="type-pill">ISFJ 壁炉</span>
+      </div>
+      <div class="features">
+        <span class="feat"><span class="feat-dot"></span>16 种场景</span>
+        <span class="feat"><span class="feat-dot"></span>环境音</span>
+        <span class="feat"><span class="feat-dot"></span>番茄钟</span>
+        <span class="feat"><span class="feat-dot"></span>免费</span>
+      </div>
+      <div class="dots" id="pDots">
+        <span class="dot"></span><span class="dot active"></span><span class="dot"></span>
+      </div>
+      <div class="url">🔗 置顶评论获取链接</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 横版封面 ══════ -->
+<h3>— 视频封面 —</h3>
+<div class="poster landscape" id="posterLS" data-theme="INTJ">
+  <div class="poster-bg active" style="background:radial-gradient(ellipse at 65% 15%,rgba(100,80,220,.15),transparent 50%),radial-gradient(ellipse at 20% 70%,rgba(40,60,180,.1),transparent 45%),linear-gradient(180deg,#05081a,#080e28 30%,#0c1230 60%,#060a1a)"></div>
+  <canvas id="particleLS" width="640" height="360"></canvas>
+
+  <div class="poster-content">
+    <div class="poster-center">
+      <div class="timer-ring" style="width:120px;height:120px">
+        <span class="timer-num" style="font-size:28px">25:00</span>
+      </div>
+      <div class="title-zh" style="font-size:22px;letter-spacing:4px">MBTI 沉浸自习室</div>
+      <div class="title-en" style="font-size:11px">16 PERSONALITIES × IMMERSIVE STUDY</div>
+    </div>
+
+    <div class="poster-bottom" style="position:absolute;right:40px;top:50%;transform:translateY(-50%);text-align:right">
+      <div class="type-row" style="flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="type-pill" style="border-color:rgba(138,158,214,.3)">✦ INTJ 星空天文台</span>
+        <span class="type-pill" style="border-color:rgba(212,168,110,.3)">✦ INFP 雨夜书店</span>
+        <span class="type-pill" style="border-color:rgba(168,216,108,.3)">✦ ENFP 萤火溪谷</span>
+        <span class="type-pill" style="border-color:rgba(216,152,80,.3)">✦ ISFJ 壁炉暖屋</span>
+        <span class="type-pill" style="color:rgba(240,236,228,.3)">… 共 16 种场景</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── 简单粒子系统 ── */
+var scenes = [
+  {type:'stars', accent:[138,158,214]},
+  {type:'rain', accent:[212,168,110]},
+  {type:'fireflies', accent:[168,216,108]}
+];
+var mbtiList = [
+  {code:'INTJ',scene:'星空天文台',idx:0},
+  {code:'INFP',scene:'雨夜书店',idx:1},
+  {code:'ENFP',scene:'萤火溪谷',idx:2}
+];
+
+function initParticles(canvas, sceneType, w, h) {
+  var ctx = canvas.getContext('2d');
+  var pts = [];
+  if (sceneType === 'stars') {
+    for (var i = 0; i < 100; i++) pts.push({x:Math.random()*w,y:Math.random()*h*.85,r:Math.random()*1.5+.3,ph:Math.random()*6.28,sp:Math.random()*.015+.004});
+  } else if (sceneType === 'rain') {
+    for (var i = 0; i < 120; i++) pts.push({x:Math.random()*1.3*w,y:Math.random()*h,len:Math.random()*14+6,vy:Math.random()*7+9,o:Math.random()*.2+.06});
+  } else if (sceneType === 'fireflies') {
+    for (var i = 0; i < 25; i++) pts.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2.5+1.2,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,ph:Math.random()*6.28,sp:Math.random()*.02+.006});
+  }
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    var now = Date.now();
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      if (sceneType === 'stars') {
+        p.ph += p.sp; var o = (Math.sin(p.ph)+1)/2*.7+.05;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.28);
+        ctx.fillStyle = 'rgba(210,215,250,'+o+')'; ctx.fill();
+      } else if (sceneType === 'rain') {
+        p.x += 1.2; p.y += p.vy;
+        if (p.y > h) { p.y = -p.len; p.x = Math.random()*1.3*w; }
+        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+1.2,p.y+p.len);
+        ctx.strokeStyle = 'rgba(170,190,220,'+p.o+')'; ctx.lineWidth = .7; ctx.stroke();
+      } else if (sceneType === 'fireflies') {
+        p.ph += p.sp; p.x += p.vx + Math.sin(p.ph)*.25; p.y += p.vy + Math.cos(p.ph)*.25;
+        var o = (Math.sin(p.ph*2)+1)/2*.55+.08;
+        if (p.x<0) p.x=w; if (p.x>w) p.x=0; if (p.y<0) p.y=h; if (p.y>h) p.y=0;
+        var g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+        g.addColorStop(0,'rgba(168,216,108,'+o+')'); g.addColorStop(1,'rgba(168,216,108,0)');
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,6.28); ctx.fillStyle=g; ctx.fill();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+initParticles(document.getElementById('particleDY'), 'rain', 360, 640);
+initParticles(document.getElementById('particleLS'), 'stars', 640, 360);
+
+/* ── 场景轮播（抖音海报） ── */
+var dyPoster = document.getElementById('posterDY');
+var bgs = dyPoster.querySelectorAll('.poster-bg');
+var dots = dyPoster.querySelectorAll('.dot');
+var curScene = 0;
+
+setInterval(function() {
+  bgs[curScene].classList.remove('active');
+  dots[curScene].classList.remove('active');
+  curScene = (curScene + 1) % 3;
+  bgs[curScene].classList.add('active');
+  dots[curScene].classList.add('active');
+  dyPoster.setAttribute('data-theme', mbtiList[curScene].code);
+  document.getElementById('pType').textContent = mbtiList[curScene].code;
+  document.getElementById('pScene').textContent = mbtiList[curScene].scene;
+}, 3000);
+</script>
+</body>
+</html>
