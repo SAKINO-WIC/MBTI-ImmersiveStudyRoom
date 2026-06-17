@@ -1206,24 +1206,25 @@ document.addEventListener('DOMContentLoaded', function(){
     bgmStarted = true;
     if(!ST.bgmOn) return;
     try{
-      snd.init();
-      if(snd.ok && snd.externalBGM){
+      snd.loadExternalBGM('music/main-bgm/bgm.mp3');
+      if(snd.externalBGM){
         snd.musicOn = true;
         snd.externalBGM.muted = false;
         snd.externalBGM.volume = ST.vol / 100 * 0.5;
         snd.externalBGM.play().then(function(){
           dom.btnMusic.classList.add('on');
         }).catch(function(e){
-          console.log('BGM play blocked, waiting for interaction');
+          console.log('BGM autoplay blocked, muted fallback');
           snd.externalBGM.muted = true;
           snd.externalBGM.play().then(function(){
             document.addEventListener('click', function unmute(){
               snd.externalBGM.muted = false;
               snd.externalBGM.volume = ST.vol / 100 * 0.5;
+              snd.musicOn = true;
               dom.btnMusic.classList.add('on');
               document.removeEventListener('click', unmute);
             }, {once: true});
-          });
+          }).catch(function(){});
         });
       }
     }catch(e){
@@ -1332,6 +1333,8 @@ document.addEventListener('DOMContentLoaded', function(){
     ST.vol = parseInt(this.value);
     if(snd.ok) snd.masterGain.gain.setTargetAtTime(ST.vol/100*0.7, snd.ac.currentTime, 0.1);
     if(snd.externalBGM) snd.externalBGM.volume = ST.vol / 100 * 0.5;
+    var masterSl = document.querySelector('[data-ch="master"]');
+    if(masterSl) masterSl.value = ST.vol;
     saveState();
   });
   dom.volIcon.addEventListener('click', function(e){ e.stopPropagation(); dom.mixerPop.classList.toggle('open'); });
@@ -1342,15 +1345,24 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   });
 
-  /* ── 音乐 ── */
+  /* ── 音乐总开关（BGM + 音效） ── */
   dom.btnMusic.addEventListener('click', function(){
     snd.init();
     if(snd.ac && snd.ac.state==='suspended'){
       var el = this;
-      snd.ac.resume().then(function(){ el.classList.toggle('on', snd.toggleMusic()); ST.bgmOn = snd.musicOn; saveState(); });
+      snd.ac.resume().then(function(){
+        snd.musicOn = !snd.musicOn;
+        el.classList.toggle('on', snd.musicOn);
+        if(snd.musicOn){ snd.playExternalBGM(); snd.applySnd(SCENES[ST.mbti] ? SCENES[ST.mbti].snd : {}); }
+        else { snd.stopExternalBGM(); snd.silence(); }
+        ST.bgmOn = snd.musicOn; saveState();
+      });
       return;
     }
-    this.classList.toggle('on', snd.toggleMusic());
+    snd.musicOn = !snd.musicOn;
+    this.classList.toggle('on', snd.musicOn);
+    if(snd.musicOn){ snd.playExternalBGM(); snd.applySnd(SCENES[ST.mbti] ? SCENES[ST.mbti].snd : {}); }
+    else { snd.stopExternalBGM(); snd.silence(); }
     ST.bgmOn = snd.musicOn;
     saveState();
   });
